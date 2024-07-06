@@ -9,6 +9,7 @@ class Character(RPGCharacter):
         self.position = (random.randint(0, world_size - 1), random.randint(0, world_size - 1))  # Random starting position
         self.max_health = self.life
         self.current_health = self.max_health  # Start with full health
+        self.inventory = [{"name": "Sword", "bonus": 7}]  # Starting with a sword
 
     def restore_health(self):
         self.current_health = self.max_health

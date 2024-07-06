@@ -8,8 +8,17 @@ class Combat:
         self.player = player
         self.enemy = enemy
 
+    def display_health(self):
+        print(f"\n{self.player.name}'s Health: {self.player.current_health}/{self.player.max_health}")
+        print(f"{self.enemy.name}'s Health: {self.enemy.current_health}/{self.enemy.max_health}")
+
     def attack(self, attacker, defender):
-        damage = max(1, attacker.strength - defender.constitution // 2)  # Simple damage formula
+        weapon_bonus = 0
+        if attacker.inventory:
+            for item in attacker.inventory:
+                if item["name"] == "Sword":
+                    weapon_bonus = item["bonus"]
+        damage = max(1, attacker.strength + weapon_bonus - defender.constitution // 2)  # Simple damage formula
         defender.current_health -= damage
         print(f"{attacker.name} attacks {defender.name} for {damage} damage!")
 
@@ -23,13 +32,17 @@ class Combat:
             print("\nChoose an action:")
             print("1. Attack")
             print("2. Defend")
+            print("3. Escape")
             choice = input("Enter your choice: ").strip()
             if choice == '1':
                 self.attack(self.player, self.enemy)
-                break
+                return "continue"
             elif choice == '2':
                 self.defend(self.player)
-                break
+                return "continue"
+            elif choice == '3':
+                self.escape()
+                return "escape"
             else:
                 print("Invalid choice. Please try again.")
 
@@ -40,18 +53,27 @@ class Combat:
         else:
             self.defend(self.enemy)
 
+    def escape(self):
+        penalty = 10
+        self.player.current_health -= penalty
+        print(f"{self.player.name} escapes the battle but loses {penalty} health!")
+
     def start_battle(self):
         print(f"A wild {self.enemy.name} appears!")
         while self.player.current_health > 0 and self.enemy.current_health > 0:
-            self.player_turn()
+            self.display_health()
+            result = self.player_turn()
+            if result == "escape":
+                return "escape"
             if self.enemy.current_health <= 0:
                 print(f"{self.enemy.name} is defeated!")
-                return True
+                return "victory"
+            self.display_health()
             self.enemy_turn()
             if self.player.current_health <= 0:
                 print("You have been defeated!")
-                return False
-        return False
+                return "defeat"
+        return "defeat"
 
 def create_enemy():
     names = ["Goblin", "Orc", "Troll", "Bandit", "Skeleton"]
