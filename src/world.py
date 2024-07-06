@@ -17,11 +17,13 @@ class GameWorld:
         if cell[0] == 'town':
             self.interact_town(player)
         elif cell[0] == 'dungeon':
-            self.interact_dungeon(player)
+            if not self.interact_dungeon(player):
+                return False  # Player was defeated
         elif cell[0] == 'treasure':
             self.interact_treasure(player)
         else:
             print("There's nothing of interest here.")
+        return True
 
     def interact_town(self, player):
         while True:
@@ -52,7 +54,7 @@ class GameWorld:
         print("You have found a dungeon. Prepare for battle!")
         enemy = create_enemy()
         combat = Combat(player, enemy)
-        combat.start_battle()
+        return combat.start_battle()
 
     def interact_treasure(self, player):
         print("You have found a treasure! Your wealth increases.")

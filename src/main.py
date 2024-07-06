@@ -47,7 +47,9 @@ def start_new_game():
                 print("Invalid move command. Use 'move N', 'move S', 'move E', or 'move W'.")
         elif command == "interact":
             x, y = player.position
-            world.interact(x, y, player)
+            if not world.interact(x, y, player):
+                print("Game Over. You have been defeated.")
+                break
         elif command == "view poi":
             print("\nPoints of Interest:")
             for poi, (x, y) in pois:

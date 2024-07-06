@@ -13,17 +13,45 @@ class Combat:
         defender.current_health -= damage
         print(f"{attacker.name} attacks {defender.name} for {damage} damage!")
 
+    def defend(self, defender):
+        defense_boost = defender.constitution // 2
+        defender.current_health += defense_boost
+        print(f"{defender.name} defends and recovers {defense_boost} health!")
+
+    def player_turn(self):
+        while True:
+            print("\nChoose an action:")
+            print("1. Attack")
+            print("2. Defend")
+            choice = input("Enter your choice: ").strip()
+            if choice == '1':
+                self.attack(self.player, self.enemy)
+                break
+            elif choice == '2':
+                self.defend(self.player)
+                break
+            else:
+                print("Invalid choice. Please try again.")
+
+    def enemy_turn(self):
+        action = random.choice(["attack", "defend"])
+        if action == "attack":
+            self.attack(self.enemy, self.player)
+        else:
+            self.defend(self.enemy)
+
     def start_battle(self):
         print(f"A wild {self.enemy.name} appears!")
         while self.player.current_health > 0 and self.enemy.current_health > 0:
-            self.attack(self.player, self.enemy)
+            self.player_turn()
             if self.enemy.current_health <= 0:
                 print(f"{self.enemy.name} is defeated!")
-                break
-            self.attack(self.enemy, self.player)
+                return True
+            self.enemy_turn()
             if self.player.current_health <= 0:
                 print("You have been defeated!")
-                break
+                return False
+        return False
 
 def create_enemy():
     names = ["Goblin", "Orc", "Troll", "Bandit", "Skeleton"]
