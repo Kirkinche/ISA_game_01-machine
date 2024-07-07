@@ -1,16 +1,17 @@
 # src/world.py
 
+import random
 from procedural_map import Map
 from combat import Combat, create_enemy
-from items import items_for_sale
 from treasures import get_random_treasure
-from skills import skills  # Import skills module
+from town import Town
 
 class GameWorld:
     def __init__(self, size=10):
         self.size = size
         self.map = Map(size)
         self.map.place_points_of_interest()
+        self.town = Town()
 
     def display_map(self):
         self.map.display_map()
@@ -18,7 +19,9 @@ class GameWorld:
     def interact(self, x, y, player):
         cell = self.map.map[x][y]
         if cell[0] == 'town':
+            self.town.add_visitor(player)
             self.interact_town(player)
+            self.town.remove_visitor(player)
         elif cell[0] == 'dungeon':
             result = self.interact_dungeon(player)
             if result == "defeat":
@@ -74,11 +77,9 @@ class GameWorld:
                 print("Invalid choice. Please try again.")
 
     def buy_items(self, player):
-        print("\nItems for sale:")
-        for item in items_for_sale:
-            print(f"{item['name']} - {item['price']} gold")
+        self.town.display_items()
         item_name = input("Enter the name of the item you want to buy: ").strip()
-        player.buy_item(item_name)
+        self.town.buy_item(player, item_name)
 
     def sell_items(self, player):
         print("\nYour inventory:")
@@ -86,7 +87,7 @@ class GameWorld:
             price = item.get("price", "N/A")
             print(f"{item['name']} - {price} gold")
         item_name = input("Enter the name of the item you want to sell: ").strip()
-        player.sell_item(item_name)
+        self.town.sell_item(player, item_name)
 
     def view_inventory(self, player):
         print("\nYour inventory:")
@@ -96,12 +97,9 @@ class GameWorld:
         print(f"Gold: {player.money}")
 
     def learn_skill(self, player):
-        print("\nAvailable skills:")
-        for skill_category, skill_list in skills.items():
-            for skill_name, skill_info in skill_list.items():
-                print(f"{skill_name}: {skill_info['description']}")
+        self.town.display_skills()
         skill_name = input("Enter the name of the skill you want to learn: ").strip()
-        player.learn_skill(skill_name)
+        self.town.learn_skill(player, skill_name)
 
     def interact_dungeon(self, player):
         print("You have found a dungeon. Prepare for battle!")
