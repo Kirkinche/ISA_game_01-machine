@@ -2,6 +2,7 @@
 
 from procedural_map import Map
 from combat import Combat, create_enemy
+from items import items_for_sale
 
 class GameWorld:
     def __init__(self, size=10):
@@ -48,8 +49,46 @@ class GameWorld:
         player.restore_health()
 
     def trade(self, player):
-        print("You enter the market to trade.")
-        # Add logic for trading (e.g., buying and selling items)
+        while True:
+            print("\nWelcome to the market. What would you like to do?")
+            print("1. Buy items")
+            print("2. Sell items")
+            print("3. View inventory")
+            print("4. Leave market")
+            choice = input("Choose an option: ").strip()
+            if choice == '1':
+                self.buy_items(player)
+            elif choice == '2':
+                self.sell_items(player)
+            elif choice == '3':
+                self.view_inventory(player)
+            elif choice == '4':
+                print("Leaving the market.")
+                break
+            else:
+                print("Invalid choice. Please try again.")
+
+    def buy_items(self, player):
+        print("\nItems for sale:")
+        for item in items_for_sale:
+            print(f"{item['name']} - {item['price']} gold")
+        item_name = input("Enter the name of the item you want to buy: ").strip()
+        player.buy_item(item_name)
+
+    def sell_items(self, player):
+        print("\nYour inventory:")
+        for item in player.inventory:
+            price = item.get("price", "N/A")
+            print(f"{item['name']} - {price} gold")
+        item_name = input("Enter the name of the item you want to sell: ").strip()
+        player.sell_item(item_name)
+
+    def view_inventory(self, player):
+        print("\nYour inventory:")
+        for item in player.inventory:
+            price = item.get("price", "N/A")
+            print(f"{item['name']} - {price} gold")
+        print(f"Gold: {player.money}")
 
     def interact_dungeon(self, player):
         print("You have found a dungeon. Prepare for battle!")

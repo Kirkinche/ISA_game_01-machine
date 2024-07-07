@@ -27,7 +27,7 @@ class RPGCharacter:
         self.affection = [] # Condition, deseases, blessing, magical effects affecting the character
         self.life = 100
         self.points = 0
-        self.money = 5
+        self.money = 100
         self.status = [] # Action or action state of the character, such as "attacking", "defending", "travelling", etc.
     def roll_dice(self):
         return random.randint(1, 6) + random.randint(1, 6) + random.randint(1, 6)
