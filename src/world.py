@@ -3,6 +3,7 @@
 from procedural_map import Map
 from combat import Combat, create_enemy
 from items import items_for_sale
+from character import Character
 
 class GameWorld:
     def __init__(self, size=10):

@@ -1,7 +1,7 @@
 # src/combat.py
 
 import random
-from RPG_character_utils import RPGCharacter
+from character import Character  # Correct import
 
 class Combat:
     def __init__(self, player, enemy):
@@ -13,12 +13,9 @@ class Combat:
         print(f"{self.enemy.name}'s Health: {self.enemy.current_health}/{self.enemy.max_health}")
 
     def attack(self, attacker, defender):
-        weapon_bonus = 0
-        if attacker.inventory:
-            for item in attacker.inventory:
-                if item["name"] == "Sword":
-                    weapon_bonus = item["bonus"]
-        damage = max(1, attacker.strength + weapon_bonus - defender.constitution // 2)  # Simple damage formula
+        weapon_bonus = attacker.get_weapon_bonus() if hasattr(attacker, 'get_weapon_bonus') else 0
+        armor_bonus = defender.get_armor_bonus() if hasattr(defender, 'get_armor_bonus') else 0
+        damage = max(1, attacker.strength + weapon_bonus - defender.constitution // 2 - armor_bonus)
         defender.current_health -= damage
         print(f"{attacker.name} attacks {defender.name} for {damage} damage!")
 
@@ -78,6 +75,6 @@ class Combat:
 def create_enemy():
     names = ["Goblin", "Orc", "Troll", "Bandit", "Skeleton"]
     name = random.choice(names)
-    enemy = RPGCharacter(race="Goblin", name=name, gender="Male", job="Warrior")
+    enemy = Character(race="Goblin", name=name, gender="Male", job="Warrior", world_size=10)
     enemy.current_health = enemy.max_health  # Ensure enemy has current_health attribute
     return enemy

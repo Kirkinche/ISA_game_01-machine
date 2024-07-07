@@ -10,7 +10,7 @@ class Character(RPGCharacter):
         self.position = (random.randint(0, world_size - 1), random.randint(0, world_size - 1))  # Random starting position
         self.max_health = self.life
         self.current_health = self.max_health  # Start with full health
-        self.inventory = [{"name": "Sword", "bonus": 5, "price": 10}]  # Starting with a sword
+        self.inventory = [{"name": "Sword", "type": "weapon", "bonus": 5, "price": 10}]  # Starting with a sword
 
     def restore_health(self):
         self.current_health = self.max_health
@@ -33,6 +33,12 @@ class Character(RPGCharacter):
                 print(f"{self.name} sold {item_name} for {item['price']} gold.")
                 return
         print(f"{item_name} not found in inventory.")
+
+    def get_weapon_bonus(self):
+        return sum(item["bonus"] for item in self.inventory if item["type"] == "weapon")
+
+    def get_armor_bonus(self):
+        return sum(item["bonus"] for item in self.inventory if item["type"] == "armor")
 
 def create_character(name, world_size, race="Human", gender="Male", job="Warrior"):
     return Character(race, name, gender, job, world_size)
