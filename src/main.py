@@ -1,8 +1,9 @@
 # src/main.py
 
-from character import create_character
+from character import create_character, Character
 from world import GameWorld
 from ui import display_main_menu
+from save_load import save_game, load_game
 
 def move_player(player, direction, world):
     x, y = player.position
@@ -36,8 +37,24 @@ def start_new_game():
     for poi, (x, y) in pois:
         print(f"{poi.title()} at ({x}, {y})")
 
+    game_loop(player, world)
+
+def load_existing_game():
+    print("Loading saved game...")
+    game_state = load_game()
+    if game_state is None:
+        print("No saved game found. Starting a new game...")
+        start_new_game()
+    else:
+        player = Character.from_save(game_state["player"])
+        world = GameWorld.from_save(game_state["world"])
+        print(f"Welcome back, {player.name}!")
+        print(f"Current position: {player.position}")
+        game_loop(player, world)
+
+def game_loop(player, world):
     while True:
-        command = input("Enter a command (move [N/S/E/W], interact, quit, view poi): ").strip().lower()
+        command = input("Enter a command (move [N/S/E/W], interact, quit, view poi, save, use skill): ").strip().lower()
         if command.startswith("move"):
             parts = command.split()
             if len(parts) == 2 and parts[1] in ["n", "s", "e", "w"]:
@@ -52,8 +69,13 @@ def start_new_game():
                 break
         elif command == "view poi":
             print("\nPoints of Interest:")
-            for poi, (x, y) in pois:
+            for poi, (x, y) in world.list_points_of_interest():
                 print(f"{poi.title()} at ({x}, {y})")
+        elif command == "save":
+            save_game(player, world)
+        elif command == "use skill":
+            skill_name = input("Enter the name of the skill you want to use: ").strip()
+            player.use_skill(skill_name)
         elif command == "quit":
             print("Exiting game. Goodbye!")
             break
@@ -67,7 +89,7 @@ def main():
         if choice == '1':
             start_new_game()
         elif choice == '2':
-            print("Load game is not implemented yet.")
+            load_existing_game()
         elif choice == '3':
             print("Exiting game. Goodbye!")
             break

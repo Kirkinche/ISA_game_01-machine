@@ -4,6 +4,7 @@ from procedural_map import Map
 from combat import Combat, create_enemy
 from items import items_for_sale
 from treasures import get_random_treasure
+from skills import skills  # Import skills module
 
 class GameWorld:
     def __init__(self, size=10):
@@ -33,13 +34,16 @@ class GameWorld:
             print("\nYou have entered a town. What would you like to do?")
             print("1. Rest")
             print("2. Trade")
-            print("3. Leave")
+            print("3. Learn Skill")
+            print("4. Leave")
             choice = input("Choose an option: ").strip()
             if choice == '1':
                 self.rest(player)
             elif choice == '2':
                 self.trade(player)
             elif choice == '3':
+                self.learn_skill(player)
+            elif choice == '4':
                 print("Leaving the town.")
                 break
             else:
@@ -91,6 +95,14 @@ class GameWorld:
             print(f"{item['name']} - {price} gold")
         print(f"Gold: {player.money}")
 
+    def learn_skill(self, player):
+        print("\nAvailable skills:")
+        for skill_category, skill_list in skills.items():
+            for skill_name, skill_info in skill_list.items():
+                print(f"{skill_name}: {skill_info['description']}")
+        skill_name = input("Enter the name of the skill you want to learn: ").strip()
+        player.learn_skill(skill_name)
+
     def interact_dungeon(self, player):
         print("You have found a dungeon. Prepare for battle!")
         enemy = create_enemy()
@@ -124,3 +136,9 @@ class GameWorld:
                 if cell[0] in ['town', 'dungeon', 'treasure']:
                     points_of_interest.append((cell[0], (x, y)))
         return points_of_interest
+
+    @classmethod
+    def from_save(cls, save_data):
+        world = cls(size=save_data["size"])
+        world.map.map = save_data["map"]
+        return world

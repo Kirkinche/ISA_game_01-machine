@@ -3,6 +3,7 @@
 import random
 from RPG_character_utils import RPGCharacter
 from items import get_item_by_name
+from skills import skills
 
 class Character(RPGCharacter):
     def __init__(self, race, name, gender, job, world_size):
@@ -11,6 +12,7 @@ class Character(RPGCharacter):
         self.max_health = self.life
         self.current_health = self.max_health  # Start with full health
         self.inventory = [{"name": "Sword", "type": "weapon", "bonus": 5, "price": 10}]  # Starting with a sword
+        self.skills = {}  # Initialize empty skills dictionary
 
     def restore_health(self):
         self.current_health = self.max_health
@@ -50,6 +52,50 @@ class Character(RPGCharacter):
         elif treasure["type"] == "consumable":
             self.inventory.append({"name": treasure["name"], "type": "consumable", "effect": treasure["effect"], "value": treasure["value"]})
             print(f"{self.name} found a {treasure['name']}!")
+
+    def learn_skill(self, skill_name):
+        for skill_category in skills.values():
+            if skill_name in skill_category:
+                self.skills[skill_name] = skill_category[skill_name]
+                print(f"{self.name} learned the skill {skill_name}!")
+                return
+        print(f"Skill {skill_name} does not exist.")
+
+    def use_skill(self, skill_name):
+        if skill_name in self.skills:
+            skill = self.skills[skill_name]
+            attribute = skill["attribute"]
+            if isinstance(attribute, list):
+                effect = skill["effect"](*[getattr(self, attr) for attr in attribute])
+            else:
+                effect = skill["effect"](getattr(self, attribute))
+            print(f"{self.name} uses {skill_name}! {skill['description']} Effect: {effect}")
+            return effect
+        else:
+            print(f"{self.name} does not know the skill {skill_name}!")
+
+    def serialize_skills(self):
+        # Convert skills to a serializable format
+        return {skill_name: {"description": skill["description"], "attribute": skill["attribute"]} for skill_name, skill in self.skills.items()}
+
+    def deserialize_skills(self, serialized_skills):
+        # Reconstruct skills from the serialized format
+        for skill_name, skill_data in serialized_skills.items():
+            for skill_category in skills.values():
+                if skill_name in skill_category:
+                    self.skills[skill_name] = skill_category[skill_name]
+                    break
+
+    @classmethod
+    def from_save(cls, save_data):
+        character = cls(save_data["race"], save_data["name"], save_data["gender"], save_data["job"], world_size=10)
+        character.position = tuple(save_data["position"])
+        character.current_health = save_data["current_health"]
+        character.max_health = save_data["max_health"]
+        character.money = save_data["money"]
+        character.inventory = save_data["inventory"]
+        character.deserialize_skills(save_data.get("skills", {}))
+        return character
 
 def create_character(name, world_size, race="Human", gender="Male", job="Warrior"):
     return Character(race, name, gender, job, world_size)
