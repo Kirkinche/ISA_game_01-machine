@@ -40,5 +40,16 @@ class Character(RPGCharacter):
     def get_armor_bonus(self):
         return sum(item["bonus"] for item in self.inventory if item["type"] == "armor")
 
+    def collect_treasure(self, treasure):
+        if treasure["type"] == "gold":
+            self.money += treasure["amount"]
+            print(f"{self.name} found {treasure['amount']} gold coins!")
+        elif treasure["type"] == "item":
+            self.inventory.append({"name": treasure["name"], "type": "treasure", "value": treasure["value"]})
+            print(f"{self.name} found a {treasure['name']} worth {treasure['value']} gold!")
+        elif treasure["type"] == "consumable":
+            self.inventory.append({"name": treasure["name"], "type": "consumable", "effect": treasure["effect"], "value": treasure["value"]})
+            print(f"{self.name} found a {treasure['name']}!")
+
 def create_character(name, world_size, race="Human", gender="Male", job="Warrior"):
     return Character(race, name, gender, job, world_size)

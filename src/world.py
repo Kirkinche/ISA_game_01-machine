@@ -3,7 +3,7 @@
 from procedural_map import Map
 from combat import Combat, create_enemy
 from items import items_for_sale
-from character import Character
+from treasures import get_random_treasure
 
 class GameWorld:
     def __init__(self, size=10):
@@ -101,7 +101,9 @@ class GameWorld:
         return result
 
     def interact_treasure(self, player):
-        print("You have found a treasure! Your wealth increases.")
+        print("You have found a treasure!")
+        treasure = get_random_treasure()
+        player.collect_treasure(treasure)
 
     def describe_surroundings(self, x, y):
         directions = {'N': (x-1, y), 'S': (x+1, y), 'E': (x, y+1), 'W': (x, y-1)}
