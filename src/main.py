@@ -1,100 +1,170 @@
-# src/main.py
-
+import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QLabel, QVBoxLayout, QWidget, QLineEdit, QHBoxLayout
+from PyQt5.QtCore import Qt
 from character import create_character, Character
 from world import GameWorld
-from ui import display_main_menu
 from save_load import save_game, load_game
+from combat import Combat, create_enemy
+from town import Town
 
-def move_player(player, direction, world):
-    x, y = player.position
-    if direction == 'n' and x > 0:
-        player.position = (x - 1, y)
-    elif direction == 's' and x < world.size - 1:
-        player.position = (x + 1, y)
-    elif direction == 'e' and y < world.size - 1:
-        player.position = (x, y + 1)
-    elif direction == 'w' and y > 0:
-        player.position = (x, y - 1)
-    else:
-        print("You can't move in that direction.")
-        return
-    print(f"New position: {player.position}")
-    print(world.describe_surroundings(player.position[0], player.position[1]))
+class MainGameWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle('Game Window')
+        self.setGeometry(100, 100, 800, 600)
+        self.world = GameWorld()
+        self.player = create_character("Player", self.world.size)
+        self.initUI()
+        self.update_map_display()
 
-def start_new_game():
-    print("Starting a new game...")
-    world = GameWorld()
-    world_size = world.size
-    
-    player_name = input("Enter your character's name: ")
-    player = create_character(player_name, world_size)
-    print(f"Character created: {player}")
-    print(f"Starting position: {player.position}")
-    print(world.describe_surroundings(player.position[0], player.position[1]))
+    def initUI(self):
+        self.map_display = QTextEdit(self)
+        self.map_display.setReadOnly(True)
 
-    print("\nPoints of Interest:")
-    pois = world.list_points_of_interest()
-    for poi, (x, y) in pois:
-        print(f"{poi.title()} at ({x}, {y})")
+        self.context_display = QTextEdit(self)
+        self.context_display.setReadOnly(True)
 
-    game_loop(player, world)
+        self.command_input = QLineEdit(self)
+        self.command_input.setPlaceholderText("Enter command here...")
+        self.command_input.returnPressed.connect(self.process_command)
 
-def load_existing_game():
-    print("Loading saved game...")
-    game_state = load_game()
-    if game_state is None:
-        print("No saved game found. Starting a new game...")
-        start_new_game()
-    else:
-        player = Character.from_save(game_state["player"])
-        world = GameWorld.from_save(game_state["world"])
-        print(f"Welcome back, {player.name}!")
-        print(f"Current position: {player.position}")
-        game_loop(player, world)
+        layout = QVBoxLayout()
+        layout.addWidget(self.map_display)
+        layout.addWidget(self.context_display)
+        layout.addWidget(self.command_input)
 
-def game_loop(player, world):
-    while True:
-        command = input("Enter a command (move [N/S/E/W], interact, quit, view poi, save, use skill): ").strip().lower()
-        if command.startswith("move"):
-            parts = command.split()
-            if len(parts) == 2 and parts[1] in ["n", "s", "e", "w"]:
-                direction = parts[1]
-                move_player(player, direction, world)
-            else:
-                print("Invalid move command. Use 'move N', 'move S', 'move E', or 'move W'.")
-        elif command == "interact":
-            x, y = player.position
-            if not world.interact(x, y, player):
-                print("Game Over. You have been defeated.")
-                break
-        elif command == "view poi":
-            print("\nPoints of Interest:")
-            for poi, (x, y) in world.list_points_of_interest():
-                print(f"{poi.title()} at ({x}, {y})")
-        elif command == "save":
-            save_game(player, world)
-        elif command == "use skill":
-            skill_name = input("Enter the name of the skill you want to use: ").strip()
-            player.use_skill(skill_name)
-        elif command == "quit":
-            print("Exiting game. Goodbye!")
-            break
+        container = QWidget()
+        container.setLayout(layout)
+        self.setCentralWidget(container)
+
+    def process_command(self):
+        command = self.command_input.text().strip().lower()
+        if command in ['n', 's', 'e', 'w']:
+            self.move_player(command)
+        elif command == 'i':
+            self.interact()
+        elif command == 'save':
+            self.save_game()
+        elif command == 'load':
+            self.load_game()
         else:
-            print("Invalid command. Please try again.")
+            self.context_display.setText("Invalid command.")
+        self.command_input.clear()
 
-def main():
-    while True:
-        display_main_menu()
-        choice = input("Choose an option: ").strip()
+    def move_player(self, direction):
+        x, y = self.player.position
+        if direction == 'n' and x > 0:
+            self.player.position = (x - 1, y)
+        elif direction == 's' and x < self.world.size - 1:
+            self.player.position = (x + 1, y)
+        elif direction == 'e' and y < self.world.size - 1:
+            self.player.position = (x, y + 1)
+        elif direction == 'w' and y > 0:
+            self.player.position = (x, y - 1)
+        self.update_map_display()
+        self.check_for_interaction()
+
+    def update_map_display(self):
+        x, y = self.player.position
+        map_str = ""
+        for i in range(self.world.size):
+            for j in range(self.world.size):
+                if (i, j) == (x, y):
+                    map_str += "P "
+                else:
+                    map_str += self.world.map.map[i][j][0][0].upper() + " "
+            map_str += "\n"
+        self.map_display.setText(map_str)
+        map_desc = self.world.describe_surroundings(x, y)
+        self.context_display.setText(f"Player Position: {self.player.position}\n\n{map_desc}")
+
+    def check_for_interaction(self):
+        x, y = self.player.position
+        cell = self.world.map.map[x][y]
+        if cell[0] == 'town':
+            self.context_display.append("You have entered a town. Press 'I' to interact.")
+        elif cell[0] == 'dungeon':
+            self.context_display.append("You have found a dungeon. Press 'I' to interact.")
+        elif cell[0] == 'treasure':
+            self.context_display.append("You have found a treasure. Press 'I' to interact.")
+        else:
+            self.context_display.append("")
+
+    def interact(self):
+        x, y = self.player.position
+        cell = self.world.map.map[x][y]
+        if cell[0] == 'town':
+            self.enter_town()
+        elif cell[0] == 'dungeon':
+            self.enter_dungeon()
+        elif cell[0] == 'treasure':
+            self.find_treasure()
+
+    def enter_town(self):
+        self.town = Town()
+        self.context_display.setText("Welcome to the town!\nOptions:\n1. Rest\n2. Trade\n3. Learn Skill\n4. Leave")
+        self.command_input.returnPressed.disconnect()
+        self.command_input.returnPressed.connect(self.process_town_command)
+
+    def process_town_command(self):
+        choice = self.command_input.text().strip().lower()
         if choice == '1':
-            start_new_game()
+            self.rest()
         elif choice == '2':
-            load_existing_game()
+            self.trade()
         elif choice == '3':
-            print("Exiting game. Goodbye!")
-            break
+            self.learn_skill()
+        elif choice == '4':
+            self.leave_town()
         else:
-            print("Invalid choice. Please select again.")
+            self.context_display.setText("Invalid choice. Please try again.")
+        self.command_input.clear()
 
-if __name__ == "__main__":
-    main()
+    def rest(self):
+        self.player.restore_health()
+        self.context_display.setText(f"{self.player.name}'s health is fully restored to {self.player.current_health}")
+        self.enter_town()
+
+    def trade(self):
+        self.context_display.setText("Trading...")
+        self.enter_town()
+
+    def learn_skill(self):
+        self.context_display.setText("Learning a new skill...")
+        self.enter_town()
+
+    def leave_town(self):
+        self.command_input.returnPressed.disconnect()
+        self.command_input.returnPressed.connect(self.process_command)
+        self.update_map_display()
+
+    def enter_dungeon(self):
+        self.enemy = create_enemy()
+        self.combat = Combat(self.player, self.enemy)
+        result = self.combat.start_battle()
+        self.context_display.setText(f"Combat Result: {result}")
+        self.update_map_display()
+
+    def find_treasure(self):
+        self.context_display.setText("Collecting the treasure...")
+        self.update_map_display()
+
+    def save_game(self):
+        save_game(self.player, self.world)
+        self.context_display.setText("Game saved successfully.")
+
+    def load_game(self):
+        game_state = load_game()
+        if game_state:
+            self.player = Character.from_save(game_state["player"])
+            self.world = GameWorld.from_save(game_state["world"])
+            self.update_map_display()
+            self.context_display.setText("Game loaded successfully.")
+        else:
+            self.context_display.setText("No saved game found.")
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    mainWin = MainGameWindow()
+    mainWin.show()
+    sys.exit(app.exec_())
