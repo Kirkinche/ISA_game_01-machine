@@ -140,3 +140,25 @@ skills = {
         }
     }
 }
+
+class Skill:
+    def __init__(self, name, description, attribute, effect):
+        self.name = name
+        self.description = description
+        self.attribute = attribute
+        self.effect = effect
+
+    def add_to_lib(self, category):
+        # Accedemos al diccionario skills globalmente
+        global skills
+        
+        # Si la categoría no existe, la creamos
+        if category not in skills:
+            skills[category] = {}
+        
+        # Añadimos el nuevo skill al diccionario en la categoría dada
+        skills[category][self.name] = {
+            "attribute": self.attribute,
+            "description": self.description,
+            "effect": self.effect
+        }

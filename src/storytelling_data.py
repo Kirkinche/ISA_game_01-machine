@@ -69,3 +69,4 @@ themes_and_settings = {
     "fantasy": "A narrative that includes magical or supernatural elements that do not exist in the real world",
     "sci_fi": "A story based on the impact of actual, imagined, or potential science, usually set in the future or on other planets"
 }
+
