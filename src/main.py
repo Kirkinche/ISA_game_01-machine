@@ -1,11 +1,12 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QLabel, QVBoxLayout, QWidget, QLineEdit, QHBoxLayout
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QVBoxLayout, QWidget, QLineEdit
 from character import create_character, Character
 from world import GameWorld
 from save_load import save_game, load_game
 from combat import Combat, create_enemy
 from town import Town
+import trading
+import skills as skills_module
 
 class MainGameWindow(QMainWindow):
     def __init__(self):
@@ -19,23 +20,9 @@ class MainGameWindow(QMainWindow):
 
     def initUI(self):
         self.map_display = QTextEdit(self)
-        self.map_display.setReadOnly(True)
+        self.map_display.setGeometry(50, 50, 700, 300)
 
-        self.context_display = QTextEdit(self)
-        self.context_display.setReadOnly(True)
 
-        self.command_input = QLineEdit(self)
-        self.command_input.setPlaceholderText("Enter command here...")
-        self.command_input.returnPressed.connect(self.process_command)
-
-        layout = QVBoxLayout()
-        layout.addWidget(self.map_display)
-        layout.addWidget(self.context_display)
-        layout.addWidget(self.command_input)
-
-        container = QWidget()
-        container.setLayout(layout)
-        self.setCentralWidget(container)
 
     def process_command(self):
         command = self.command_input.text().strip().lower()
@@ -47,6 +34,10 @@ class MainGameWindow(QMainWindow):
             self.save_game()
         elif command == 'load':
             self.load_game()
+        elif command == 'view places':
+            self.view_places()
+        elif command == 'view skills':
+            self.context_display.setText(skills_module.display_skills(self.player))
         else:
             self.context_display.setText("Invalid command.")
         self.command_input.clear()
@@ -75,8 +66,24 @@ class MainGameWindow(QMainWindow):
                     map_str += self.world.map.map[i][j][0][0].upper() + " "
             map_str += "\n"
         self.map_display.setText(map_str)
+        self.update_context_display()
+
+    def update_context_display(self):
+        x, y = self.player.position
         map_desc = self.world.describe_surroundings(x, y)
-        self.context_display.setText(f"Player Position: {self.player.position}\n\n{map_desc}")
+        cell = self.world.map.map[x][y]
+        context_text = f"Player Position: {self.player.position}\n\n{map_desc}\n"
+
+        if cell[0] == 'town':
+            context_text += "You have entered a town. Available commands: 'i' to interact, 'view places', 'view skills', 'save' to save game, 'load' to load game.\n"
+        elif cell[0] == 'dungeon':
+            context_text += "You have found a dungeon. Available commands: 'i' to interact, 'view places', 'view skills', 'save' to save game, 'load' to load game.\n"
+        elif cell[0] == 'treasure':
+            context_text += "You have found a treasure. Available commands: 'i' to interact, 'view places', 'view skills', 'save' to save game, 'load' to load game.\n"
+        else:
+            context_text += "Available commands: 'n', 's', 'e', 'w' to move, 'view skills', 'save' to save game, 'load' to load game.\n"
+
+        self.context_display.setText(context_text)
 
     def check_for_interaction(self):
         x, y = self.player.position
@@ -111,9 +118,13 @@ class MainGameWindow(QMainWindow):
         if choice == '1':
             self.rest()
         elif choice == '2':
-            self.trade()
+            self.context_display.setText(trading.display_items_for_sale(self.town))
+            self.command_input.returnPressed.disconnect()
+            self.command_input.returnPressed.connect(self.process_trade_command)
         elif choice == '3':
-            self.learn_skill()
+            self.context_display.setText(skills_module.display_skills_to_learn(self.town))
+            self.command_input.returnPressed.disconnect()
+            self.command_input.returnPressed.connect(self.process_learn_skill_command)
         elif choice == '4':
             self.leave_town()
         else:
@@ -125,12 +136,25 @@ class MainGameWindow(QMainWindow):
         self.context_display.setText(f"{self.player.name}'s health is fully restored to {self.player.current_health}")
         self.enter_town()
 
-    def trade(self):
-        self.context_display.setText("Trading...")
+    def process_trade_command(self):
+        choice = self.command_input.text().strip().lower()
+        result = trading.process_trade_command(self.player, self.town, choice)
+        self.context_display.setText(result)
+        self.command_input.clear()
         self.enter_town()
 
-    def learn_skill(self):
-        self.context_display.setText("Learning a new skill...")
+    def process_sell_command(self):
+        choice = self.command_input.text().strip().lower()
+        result = trading.process_sell_command(self.player, self.town, choice)
+        self.context_display.setText(result)
+        self.command_input.clear()
+        self.enter_town()
+
+    def process_learn_skill_command(self):
+        choice = self.command_input.text().strip()
+        result = skills_module.process_learn_skill_command(self.player, self.town, choice)
+        self.context_display.setText(result)
+        self.command_input.clear()
         self.enter_town()
 
     def leave_town(self):
@@ -140,10 +164,40 @@ class MainGameWindow(QMainWindow):
 
     def enter_dungeon(self):
         self.enemy = create_enemy()
-        self.combat = Combat(self.player, self.enemy)
-        result = self.combat.start_battle()
-        self.context_display.setText(f"Combat Result: {result}")
-        self.update_map_display()
+        self.combat = Combat(self.player, self.enemy, self.append_output)
+        self.context_display.setText("You have encountered an enemy! Available commands: 'attack', 'defend', 'escape'")
+        self.command_input.returnPressed.disconnect()
+        self.command_input.returnPressed.connect(self.process_combat_command)
+
+    def process_combat_command(self):
+        command = self.command_input.text().strip().lower()
+        if command in ['attack', 'defend', 'escape']:
+            result = self.combat.player_turn(command)
+            if result == "escape":
+                self.context_display.setText("You have successfully escaped.")
+                self.command_input.returnPressed.disconnect()
+                self.command_input.returnPressed.connect(self.process_command)
+                self.update_map_display()
+                return
+            self.combat.display_health()
+            if self.enemy.current_health <= 0:
+                self.context_display.append("You have defeated the enemy!")
+                self.command_input.returnPressed.disconnect()
+                self.command_input.returnPressed.connect(self.process_command)
+                self.update_map_display()
+                return
+            self.combat.enemy_turn()
+            self.combat.display_health()
+            if self.player.current_health <= 0:
+                self.context_display.append("You have been defeated...")
+                self.command_input.returnPressed.disconnect()
+                self.command_input.returnPressed.connect(self.process_command)
+                self.update_map_display()
+                return
+            self.context_display.append("Combat continues. Available commands: 'attack', 'defend', 'escape'")
+        else:
+            self.context_display.setText("Invalid command. Available commands: 'attack', 'defend', 'escape'")
+        self.command_input.clear()
 
     def find_treasure(self):
         self.context_display.setText("Collecting the treasure...")
@@ -162,6 +216,31 @@ class MainGameWindow(QMainWindow):
             self.context_display.setText("Game loaded successfully.")
         else:
             self.context_display.setText("No saved game found.")
+
+    def view_places(self):
+        x, y = self.player.position
+        cell = self.world.map.map[x][y]
+        if cell[0] == 'town':
+            self.context_display.setText("Places of interest in the town:\n1. Inn\n2. Market\n3. Training Ground")
+        elif cell[0] == 'dungeon':
+            self.context_display.setText("Features of the dungeon:\n1. Dark Hallways\n2. Hidden Traps\n3. Monster Lairs")
+        elif cell[0] == 'treasure':
+            self.context_display.setText("Details about the treasure:\n1. Ancient Artifacts\n2. Precious Gems\n3. Gold Coins")
+        else:
+            self.context_display.setText("No special places here.")
+
+    def view_skills(self):
+        if not self.player.skills:
+            self.context_display.setText("You have not learned any skills yet.")
+        else:
+            skills_text = "Your skills:\n"
+            for skill in self.player.skills:
+                skill_info = skills[skill]
+                skills_text += f"{skill}: {skill_info['description']}\n"
+            self.context_display.setText(skills_text)
+
+    def append_output(self, text):
+        self.context_display.append(text)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

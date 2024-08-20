@@ -13,6 +13,11 @@ class Character(RPGCharacter):
         self.current_health = self.max_health  # Start with full health
         self.inventory = [{"name": "Sword", "type": "weapon", "bonus": 5, "price": 10}]  # Starting with a sword
         self.skills = {}  # Initialize empty skills dictionary
+        self.current_health = self.max_health  # Start with full health
+       
+
+    def __repr__(self):
+        return f"{self.name}: {self.current_health}/{self.max_health} HP, {self.money} gold"
 
     def restore_health(self):
         self.current_health = self.max_health
@@ -85,6 +90,9 @@ class Character(RPGCharacter):
                 if skill_name in skill_category:
                     self.skills[skill_name] = skill_category[skill_name]
                     break
+    
+    def is_defeated(self):
+        return self.current_health <= 0
 
     @classmethod
     def from_save(cls, save_data):

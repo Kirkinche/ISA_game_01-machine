@@ -2,7 +2,7 @@
 
 import random
 from skills import skills
-from items import items_for_sale
+from items import items_for_sale, get_item_by_name
 
 class Town:
     def __init__(self):
@@ -30,10 +30,8 @@ class Town:
     def display_skills(self):
         print("\nAvailable skills:")
         for skill_name in self.skills_available:
-            for skill_category in skills.values():
-                if skill_name in skill_category:
-                    skill_info = skill_category[skill_name]
-                    print(f"{skill_name}: {skill_info['description']}")
+            skill_info = skills[skill_name]
+            print(f"{skill_name}: {skill_info['description']}")
 
     def display_items(self):
         print("\nItems for sale:")
@@ -53,14 +51,15 @@ class Town:
                     if player.money >= item["price"]:
                         player.buy_item(item_name)
                         item["stock"] -= 1
-                        return
+                        return True
                     else:
                         print(f"{player.name} does not have enough gold to buy {item_name}.")
-                        return
+                        return False
                 else:
                     print(f"{item_name} is out of stock.")
-                    return
+                    return False
         print(f"Item {item_name} is not available for sale in this town.")
+        return False
 
     def sell_item(self, player, item_name):
         for item in player.inventory:
