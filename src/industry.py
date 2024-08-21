@@ -1,0 +1,1 @@
+#this module create the industry object  with its attributes and methods, for industrial simulations.
