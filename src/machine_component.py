@@ -39,15 +39,33 @@ class MachineComponent:
     def remove_constraint(self, constraint):
         self.constraints.remove(constraint)
 
-    def apply_force(self, name, force_vector, contact_point):
-        self.forces[name] = (force_vector, contact_point)
+    def apply_force(self, name, force_vector, contact_point, duration):
+        """
+        Applies a force to the component for a specific duration.
+
+        Args:
+            name (str): A unique identifier for the force.
+            force_vector (tuple): The force vector (fx, fy, fz) in Newtons.
+            contact_point (tuple): The point of force application (x, y, z) in meters, relative to the component's origin.
+            duration (int): The duration for which the force is applied (in time units, s.i., seconds).
+        """
+        if name in self.forces:
+            # Handle existing forces (e.g., update duration, modify vector)
+            # For simplicity, we'll just update the duration
+            self.forces[name]["duration"] = duration
+        else:
+            self.forces[name] = {
+                "vector": force_vector,
+                "contact_point": contact_point,
+                "duration": duration,
+            }
 
     def update_position(self):
         self.position = tuple(p + v for p, v in zip(self.position, self.velocity))
 
     def update_velocity(self):
         self.velocity = tuple(v + a for v, a in zip(self.velocity, self.acceleration))
-        self.acceleration = (0, 0, 0)
+
 
     def update(self):
         self.update_position()
@@ -93,11 +111,29 @@ class MachineComponent:
         youngs_modulus = 200e9  # Pa, for steel
         self.stress += thermal_coefficient * delta_temperature * youngs_modulus
 
-    # 3. Friction and Wear Calculation
-    def update_wear(self, rate_of_wear):
-        self.wear += rate_of_wear  # Simplified wear update based on a given rate
+    def update_wear(self, time_interval):
+            """Updates the component's wear based on stress, strain, and material properties."""
 
-    # 4. Stress and Strain Calculations
+            # 1. Base Wear Rate:
+            base_wear_rate = material_lib[self.material]["wear"]
+
+            # 2. Stress Factor:
+            stress_factor = 1.0  # No stress influence
+            if self.stress > 0: 
+                stress_limit = material_lib[self.material].get("resistance", float("inf")) * 0.8 # Example: 80% of yield strength
+                stress_factor = 1 + (self.stress / stress_limit) ** 2  # Quadratic increase with stress
+
+            # 3. Strain Factor:
+            strain_factor = 1.0  # No strain influence
+            if self.strain > 0:
+                strain_limit = 0.02  # Example strain limit
+                strain_factor = 1 + (self.strain / strain_limit) ** 3  # Cubic increase with strain
+
+            # 4. Combined Wear:
+            total_wear_rate = base_wear_rate * stress_factor * strain_factor * time_interval
+            self.wear += total_wear_rate
+
+    # Stress and Strain Calculations
     def calculate_stress(self, force):
         if self.surface_area == 0:
             raise ValueError("Surface area is zero. Please set a valid surface area before calculating stress.")
@@ -172,6 +208,58 @@ class MachineComponent:
     def calculate_potential_energy(self, gravity, reference_height):
         self.potential_energy = self.mass * gravity * (self.position[2] - reference_height)
         return self.potential_energy
+
+    def calculate_net_force(self):
+        """Calculates the sum of all forces acting on the component."""
+        self.net_force = [0, 0, 0]  # Reset net force
+
+        forces_to_remove = []  # Keep track of forces to remove after iteration
+
+        for name, force_data in self.forces.items():
+            if force_data["duration"] > 0:
+                # Apply the force vector to the net force
+                self.net_force = [self.net_force[i] + force_data["vector"][i] for i in range(3)]
+                # Decrement the force duration
+                force_data["duration"] -= 1
+            else:
+                # Mark the force for removal if its duration has reached zero
+                forces_to_remove.append(name)
+
+        # Remove forces with zero duration
+        for name in forces_to_remove:
+            del self.forces[name]
+
+        # Add logic for other forces (gravity, friction, etc.)
+        # Example: self.net_force[2] -= 9.8 * self.mass  # Gravity
+    
+    def simulate(self, time_units):
+        for _ in range(time_units):
+            # 1. Calculate Net Force (Implement your force logic)
+            self.calculate_net_force() 
+
+            # 2. Update Acceleration
+            self.acceleration = tuple(f / self.mass for f in self.net_force)
+
+            # 3. Update Velocity
+            self.update_velocity()
+
+            # 4. Update Position
+            self.update_position()
+
+            # 5. Reset Acceleration 
+            self.acceleration = (0, 0, 0) 
+
+            # 6. Calculate Kinetic and Potential Energy
+            self.calculate_kinetic_energy()
+            self.calculate_potential_energy()
+
+            # 7. Calculate Stress and Strain (Implement your stress and strain logic)
+            self.calculate_stress()
+            self.calculate_strain()
+            # 8. Update Wear Based on Stress, Strain, and Material
+            self.update_wear(time_units)
+    
+
 
 #provide a set of material and resistance in si units in a dictionnary variable, such as steel, copper, bronze, aluminium, etc. with their density, resistance, wear, friction, etc.
 #Density: Measured in kilograms per cubic meter (kg/m³)

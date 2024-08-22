@@ -1,6 +1,6 @@
 #this module create the machine object with its attributes and methods, for machinery and apparatus simulations.
 from typing import Any
-from machine_component import MachineComponent
+from machine_component import MachineComponent, material_lib
 
 class Machine:
     def __init__(self, name):
@@ -85,3 +85,9 @@ class Machine:
             impact += material_density * component.mass
         return impact
     
+    def simulate(self, time_units):
+        """Simulates the machine's behavior over a given number of time units."""
+        for component in self.components:
+            component.simulate(time_units)
+            # Update machine attributes based on component behavior
+            # This could include updating speed, power consumption, wear, etc.
