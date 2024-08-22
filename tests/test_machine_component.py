@@ -1,55 +1,107 @@
+import sys, os
+#INHOUSE MODULES:
+script_directory_src1 = os.path.dirname(os.path.abspath("E:/APIs/ISA_game_01/src/machine_component.py"))
+sys.path.append(script_directory_src1)
+import unittest
+import time
+from machine_component import MachineComponent
 
-from src.machine_component import MachineComponent
+class TestMachineComponent(unittest.TestCase):
 
-# Creating two machine components
-component1 = MachineComponent("Gear")
-component2 = MachineComponent("Bolt")
+    def setUp(self):
+        # Initialize a MachineComponent object for testing
+        self.component = MachineComponent("TestComponent")
+        self.component.mass = 1000  # kg
+        self.component.surface_area = 2  # m^2
+        self.component.material = "steel"  # Using steel from material_lib
 
-component1.material = "steel"
-component2.material = "copper"
-# Setting a valid surface area (in square meters)
-component1.surface_area = 0.01  # Example: 0.01 m^2
-component2.surface_area = 0.02  # Example: 0.01 m^2
-# Setting a valid mass (in kilograms)
-component1.mass = 5.0  # Example: 5 kg
-component2.mass = 3.0  # Example: 5 kg
+    def test_apply_force(self):
+        # Apply a force to the component
+        self.component.apply_force("test_force", (1000, 0, 0), (1, 0, 0), duration=5)
+        self.assertIn("test_force", self.component.forces)
+        self.assertEqual(self.component.forces["test_force"]["vector"], (1000, 0, 0))
 
-# Setting volume (in cubic meters) for the components
-component1.volume = 0.05  # m^3, example volume
-component2.volume = 0.04
+    def test_calculate_net_force(self):
+        # Apply multiple forces and calculate net force
+        self.component.apply_force("force1", (1000, 0, 0), (1, 0, 0), duration=5)
+        self.component.apply_force("force2", (0, 500, 0), (1, 0, 0), duration=5)
+        net_force = self.component.calculate_net_force()
+        self.assertEqual(net_force, [1000, 500, 0])
 
-# Calculating stiffness based on material and geometry
-component1.calculate_stiffness()
-# Applying forces and simulating a scenario
-component1.apply_force("force_1", (100, 0, 0), (0, 0, 0))
-component2.apply_force("force_2", (-100, 0, 0), (0, 0, 0))
+    def test_calculate_stress(self):
+        # Calculate stress based on applied force and surface area
+        force = 2000  # N
+        self.component.calculate_stress(force)
+        expected_stress = force / self.component.surface_area
+        self.assertEqual(self.component.stress, expected_stress)
 
-# Detecting and resolving collision
-if component1.detect_collision(component2):
-    component1.resolve_collision(component2)
+    def test_calculate_strain(self):
+        # Calculate strain based on stress and material properties
+        self.component.stress = 200000000  # Pa
+        self.component.calculate_strain()
+        expected_strain = self.component.stress / 200e9  # Young's modulus of steel
+        self.assertAlmostEqual(self.component.strain, expected_strain)
 
-# Calculating and updating wear
-wear_rate = 0.0000001
-component1.update_wear(wear_rate)
+    def test_simulate_temperature(self):
+        # Test the temperature simulation method with real-time data printout
+        self.component.start_sensors()
+        print("Real-time Temperature Data:")
+        for _ in range(5):  # Simulate and print data for 5 seconds
+            time.sleep(1)
+            print(f"Temperature: {self.component.temperature_sensor[-1]:.2f} °C")
+        self.assertTrue(len(self.component.temperature_sensor) > 0)
+        self.assertTrue(48 <= self.component.temperature_sensor[-1] <= 52)
 
-# Calculating stress and strain
-force_applied = 1000  # N
-component1.calculate_stress(force_applied)
-component1.calculate_strain()
+    def test_simulate_pressure(self):
+        # Test the pressure simulation method with real-time data printout
+        self.component.start_sensors()
+        print("Real-time Pressure Data:")
+        for _ in range(5):  # Simulate and print data for 5 seconds
+            time.sleep(1)
+            pressure_value = self.component.pressure_sensor[-1]
+            print(f"Pressure: {pressure_value:.2f} kPa")
+            self.assertTrue(100.5 <= pressure_value <= 102.0, "Pressure is out of expected range")
 
-# Simulating vibration
-damping_coefficient = 0.05
-vibration_response = component1.simulate_vibration_response(force_applied, damping_coefficient)
 
-# Calculating energy
-kinetic_energy = component1.calculate_kinetic_energy()
-potential_energy = component1.calculate_potential_energy(9.81, 0)
-velocity_after_time = component1.calculate_velocity_after_time(1)
-# Print some results
-print(f"Stress: {component1.stress} N/m²")
-print(f"strain: {component1.strain} N/m")
-print(f"Collision Detected: {component1.detect_collision(component2)}")
-print(f"Vibration Amplitude: {vibration_response}")
-print(f"Kinetic Energy: {kinetic_energy} J")
-print(f"Potential Energy: {potential_energy} J")
-print(f"velocity after time: {velocity_after_time}")
+    def test_simulate_vibration(self):
+        # Test the vibration simulation method with real-time data printout
+        self.component.start_sensors()
+        print("Real-time Vibration Data:")
+        for _ in range(5):  # Simulate and print data for 5 seconds
+            time.sleep(1)
+            vibration_value = self.component.vibration_sensor[-1]
+            print(f"Vibration Intensity: {vibration_value:.2f} units")
+            self.assertGreaterEqual(vibration_value, 0, "Vibration intensity should be non-negative")
+
+    def test_update_position(self):
+        # Test the update_position method
+        self.component.velocity = (1, 1, 1)  # m/s
+        self.component.update_position()
+        self.assertEqual(self.component.position, (1, 1, 1))
+
+    def test_calculate_kinetic_energy(self):
+        # Test the kinetic energy calculation
+        self.component.velocity = (10, 0, 0)  # m/s
+        kinetic_energy = self.component.calculate_kinetic_energy()
+        expected_ke = 0.5 * self.component.mass * 10 ** 2
+        self.assertEqual(kinetic_energy, expected_ke)
+
+    def test_calculate_potential_energy(self):
+        # Test the potential energy calculation
+        self.component.position = (0, 0, 10)  # 10 meters above reference
+        potential_energy = self.component.calculate_potential_energy(gravity=9.8, reference_height=0)
+        expected_pe = self.component.mass * 9.8 * 10
+        self.assertEqual(potential_energy, expected_pe)
+
+    def test_update_wear(self):
+        # Test the wear update method
+        self.component.stress = 150000000  # Pa
+        self.component.update_wear(1)  # Simulate for 1 time unit
+        self.assertTrue(self.component.wear > 0)
+
+    def tearDown(self):
+        # Clean up (if necessary)
+        pass
+
+if __name__ == '__main__':
+    unittest.main()

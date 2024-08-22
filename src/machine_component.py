@@ -1,5 +1,7 @@
-#this module create the machine_component object  with its attributes and methods, for mechanical simulations in an apparatus or similar.
-# All is in S.I. units. 
+import numpy as np
+import time
+import threading
+
 class MachineComponent:
     def __init__(self, name):
         self.name = name
@@ -9,35 +11,83 @@ class MachineComponent:
         self.forces = {}  # dictionary of forces applied on the component
         self.acceleration = (0, 0, 0)  # m/s^2 of the center of mass
         self.momentum = (0, 0, 0)  # kg*m/s of the center of mass
-        self.resistance = 0
-        self.wear = 0
-        self.friction = 0
-        self.constraints = {
-            "fixed": False,
-            "locked": False,
-        }
-        self.geometry = []  # list of 3D coordinates that define the vertex of the shape of the component
-        self.center_of_mass = (0, 0, 0)  # 3D coordinates (x, y, z) in meters
-        self.shape = None
-        self.color = None
-        self.texture = None
-        self.volume = 0
-        self.material = None
+        self.temperature = 25.0  # Initial temperature in Celsius
+        self.pressure = 101.3  # Initial pressure in kPa
+        self.vibration_intensity = 0.0
+        self.temperature_sensor = []
+        self.pressure_sensor = []
+        self.vibration_sensor = []
+        self.force_sensor = []
+        self.rotation_speed_sensor = []
+        self.current_sensor = []
         self.surface_area = 0
-        self.temperature = 0
-        self.pressure = 0
-        self.density = 0
         self.stress = 0
-        self.stiffness = 0  # Stiffness in N/m
-        self.freedom_degree = {
-            "translation": [True, True, True],
-            "rotation": [True, True, True]}
+        self.strain = 0
+        self.wear = 0
+        self.material = None
 
-    def add_constraint(self, constraint):
-        self.constraints.append(constraint)
+    def simulate_temperature(self):
+        base_temp = 50  # Base temperature in Celsius
+        while True:
+            # Adjust base temperature with friction-induced heat (example)
+            friction_heat = sum([np.linalg.norm(force["vector"]) for force in self.forces.values()]) * 0.001
+            temp = base_temp + friction_heat + np.random.normal(0, 2)  # Add noise to simulate real data
+            self.temperature_sensor.append(temp)
+            time.sleep(1)  # Simulate real-time delay
 
-    def remove_constraint(self, constraint):
-        self.constraints.remove(constraint)
+    def simulate_pressure(self):
+        base_pressure = 101.3  # Base pressure in kPa
+        while True:
+            # Calculate pressure based on applied forces and area
+            applied_force = np.linalg.norm(self.calculate_net_force())
+            if self.surface_area > 0:
+                pressure = base_pressure + (applied_force / self.surface_area) + np.random.normal(0, 0.05)
+            else:
+                pressure = base_pressure + np.random.normal(0, 0.05)
+            self.pressure_sensor.append(pressure)
+            time.sleep(1)
+            
+    def simulate_vibration(self):
+        while True:
+            # Adjust vibration based on applied forces (simple harmonic response)
+            vibration = self.simulate_vibration_response(np.linalg.norm(self.calculate_net_force()), 0.1)
+            
+            # Add noise and ensure non-negative vibration intensity
+            vibration_with_noise = max(vibration + np.random.normal(0, 0.05), 0)
+            
+            self.vibration_sensor.append(vibration_with_noise)
+            time.sleep(1)
+
+    def start_sensors(self):
+        threading.Thread(target=self.simulate_temperature).start()
+        threading.Thread(target=self.simulate_pressure).start()
+        threading.Thread(target=self.simulate_vibration).start()
+
+    def calculate_net_force(self):
+        """Calculates the sum of all forces acting on the component."""
+        net_force = [0, 0, 0]  # Reset net force
+        for force_data in self.forces.values():
+            net_force = [net_force[i] + force_data["vector"][i] for i in range(3)]
+        return net_force
+    
+    def simulate_vibration_response(self, force, damping_coefficient):
+        omega_n = self.calculate_natural_frequency()
+        # Calculate amplitude and ensure it's non-negative
+        try:
+            amplitude = force / (self.mass * max(((omega_n ** 2) - damping_coefficient ** 2), 1e-6))
+        except ZeroDivisionError:
+            amplitude = 0  # Handle division by zero cases
+
+        # Add noise and ensure non-negative amplitude
+        amplitude = max(amplitude + np.random.normal(0, 0.01), 0)
+        return amplitude
+
+    def calculate_natural_frequency(self):
+        if self.mass == 0:
+            raise ValueError("Mass is zero. Please set a valid mass before calculating the natural frequency.")
+        stiffness = 200000  # Example stiffness, in N/m
+        natural_frequency = (1 / (2 * np.pi)) * ((stiffness / self.mass) ** 0.5)
+        return natural_frequency
 
     def apply_force(self, name, force_vector, contact_point, duration):
         """
@@ -51,7 +101,6 @@ class MachineComponent:
         """
         if name in self.forces:
             # Handle existing forces (e.g., update duration, modify vector)
-            # For simplicity, we'll just update the duration
             self.forces[name]["duration"] = duration
         else:
             self.forces[name] = {
@@ -65,7 +114,6 @@ class MachineComponent:
 
     def update_velocity(self):
         self.velocity = tuple(v + a for v, a in zip(self.velocity, self.acceleration))
-
 
     def update(self):
         self.update_position()
@@ -83,7 +131,6 @@ class MachineComponent:
         else:
             raise ValueError("Material not found in the material library.")
 
-    # 1. Collision Detection and Response
     def detect_collision(self, other_component):
         # Simple bounding box collision detection example
         for vertex in self.geometry:
@@ -97,7 +144,6 @@ class MachineComponent:
             # Exchange velocities along the collision normal
             self.velocity, other_component.velocity = other_component.velocity, self.velocity
 
-    # 2. Thermal Expansion/Contraction
     def update_thermal_expansion(self):
         thermal_coefficient = 0.000012  # Example coefficient for steel
         delta_temperature = self.temperature - 20  # Assuming 20°C as reference
@@ -112,95 +158,45 @@ class MachineComponent:
         self.stress += thermal_coefficient * delta_temperature * youngs_modulus
 
     def update_wear(self, time_interval):
-            """Updates the component's wear based on stress, strain, and material properties."""
+        """Updates the component's wear based on stress, strain, and material properties."""
+        base_wear_rate = material_lib[self.material]["wear"]
+        stress_factor = 1.0
+        if self.stress > 0: 
+            stress_limit = material_lib[self.material].get("resistance", float("inf")) * 0.8
+            stress_factor = 1 + (self.stress / stress_limit) ** 2
+        strain_factor = 1.0
+        if self.strain > 0:
+            strain_limit = 0.02
+            strain_factor = 1 + (self.strain / strain_limit) ** 3
+        total_wear_rate = base_wear_rate * stress_factor * strain_factor * time_interval
+        self.wear += total_wear_rate
 
-            # 1. Base Wear Rate:
-            base_wear_rate = material_lib[self.material]["wear"]
-
-            # 2. Stress Factor:
-            stress_factor = 1.0  # No stress influence
-            if self.stress > 0: 
-                stress_limit = material_lib[self.material].get("resistance", float("inf")) * 0.8 # Example: 80% of yield strength
-                stress_factor = 1 + (self.stress / stress_limit) ** 2  # Quadratic increase with stress
-
-            # 3. Strain Factor:
-            strain_factor = 1.0  # No strain influence
-            if self.strain > 0:
-                strain_limit = 0.02  # Example strain limit
-                strain_factor = 1 + (self.strain / strain_limit) ** 3  # Cubic increase with strain
-
-            # 4. Combined Wear:
-            total_wear_rate = base_wear_rate * stress_factor * strain_factor * time_interval
-            self.wear += total_wear_rate
-
-    # Stress and Strain Calculations
     def calculate_stress(self, force):
         if self.surface_area == 0:
             raise ValueError("Surface area is zero. Please set a valid surface area before calculating stress.")
-        cross_sectional_area = self.surface_area  # Assuming stress = Force / Area
-        self.stress = force / cross_sectional_area
+        self.stress = force / self.surface_area
 
     def calculate_strain(self):
         youngs_modulus = 200e9  # Pa, for steel
         self.strain = self.stress / youngs_modulus
 
-
     def calculate_velocity_after_time(self, time_interval):
-        """
-        Calculate the velocity of the component after a specific time interval 
-        given the forces currently applied on the component.
-        
-        Parameters:
-        time_interval (float): The time interval over which to calculate the velocity (in seconds).
-        
-        Returns:
-        tuple: The new velocity of the component (vx, vy, vz) in m/s.
-        """
         if self.mass == 0:
             raise ValueError("Mass is zero. Please set a valid mass before calculating velocity.")
-        
-        # Sum up all the forces to find the net force
-        net_force = [0, 0, 0]
-        for force_vector, _ in self.forces.values():
-            net_force = [net_force[i] + force_vector[i] for i in range(3)]
-        
-        # Calculate acceleration (a = F/m)
+        net_force = self.calculate_net_force()
         self.acceleration = tuple(f / self.mass for f in net_force)
-        
-        # Update velocity (v = u + at)
         self.velocity = tuple(v + a * time_interval for v, a in zip(self.velocity, self.acceleration))
-        
         return self.velocity
     
-    # Method to calculate stiffness based on material and geometry
     def calculate_stiffness(self):
         if not self.material or self.volume == 0:
             raise ValueError("Material or volume not set. Please ensure these properties are initialized.")
-        
-        youngs_modulus = material_lib[self.material]["resistance"]  # Use the material's resistance as a proxy for Young's modulus
-        cross_sectional_area = self.surface_area  # Simplification; in reality, you may need a more specific calculation
-        
-        # Example formula for stiffness of a bar (stiffness = (Young's modulus * Area) / Length)
-        length = 1.0  # Placeholder, this should be based on the geometry of the component
+        youngs_modulus = material_lib[self.material]["resistance"]
+        cross_sectional_area = self.surface_area
+        length = 1.0
         self.stiffness = (youngs_modulus * cross_sectional_area) / length
         return self.stiffness
-    # Modified natural frequency calculation to use the component's stiffness
-    def calculate_natural_frequency(self):
-        if self.mass == 0:
-            raise ValueError("Mass is zero. Please set a valid mass before calculating the natural frequency.")
-        if self.stiffness == 0:
-            raise ValueError("Stiffness is zero. Please calculate or set stiffness before calculating natural frequency.")
-        
-        self.natural_frequency = (1 / (2 * 3.1416)) * ((self.stiffness / self.mass) ** 0.5)
-        return self.natural_frequency
     
-    def simulate_vibration_response(self, force, damping_coefficient):
-        # Simple damped harmonic oscillator model
-        omega_n = self.calculate_natural_frequency()
-        self.amplitude = force / (self.mass * ((omega_n ** 2) - damping_coefficient ** 2))
-        return self.amplitude
-
-    # 6. Energy Calculation
     def calculate_kinetic_energy(self):
         self.kinetic_energy = 0.5 * self.mass * sum(v ** 2 for v in self.velocity)
         return self.kinetic_energy
@@ -210,86 +206,48 @@ class MachineComponent:
         return self.potential_energy
 
     def calculate_net_force(self):
-        """Calculates the sum of all forces acting on the component."""
-        self.net_force = [0, 0, 0]  # Reset net force
-
-        forces_to_remove = []  # Keep track of forces to remove after iteration
-
+        self.net_force = [0, 0, 0]
+        forces_to_remove = []
         for name, force_data in self.forces.items():
             if force_data["duration"] > 0:
-                # Apply the force vector to the net force
                 self.net_force = [self.net_force[i] + force_data["vector"][i] for i in range(3)]
-                # Decrement the force duration
                 force_data["duration"] -= 1
             else:
-                # Mark the force for removal if its duration has reached zero
                 forces_to_remove.append(name)
-
-        # Remove forces with zero duration
         for name in forces_to_remove:
             del self.forces[name]
+        return self.net_force
 
-        # Add logic for other forces (gravity, friction, etc.)
-        # Example: self.net_force[2] -= 9.8 * self.mass  # Gravity
-    
     def simulate(self, time_units):
         for _ in range(time_units):
-            # 1. Calculate Net Force (Implement your force logic)
             self.calculate_net_force() 
-
-            # 2. Update Acceleration
             self.acceleration = tuple(f / self.mass for f in self.net_force)
-
-            # 3. Update Velocity
             self.update_velocity()
-
-            # 4. Update Position
             self.update_position()
-
-            # 5. Reset Acceleration 
             self.acceleration = (0, 0, 0) 
-
-            # 6. Calculate Kinetic and Potential Energy
             self.calculate_kinetic_energy()
-            self.calculate_potential_energy()
-
-            # 7. Calculate Stress and Strain (Implement your stress and strain logic)
-            self.calculate_stress()
+            self.calculate_potential_energy(gravity=9.8, reference_height=0)
+            self.calculate_stress(sum(self.net_force))
             self.calculate_strain()
-            # 8. Update Wear Based on Stress, Strain, and Material
             self.update_wear(time_units)
     
 
-
-#provide a set of material and resistance in si units in a dictionnary variable, such as steel, copper, bronze, aluminium, etc. with their density, resistance, wear, friction, etc.
-#Density: Measured in kilograms per cubic meter (kg/m³)
-#Resistance: Measured in Pascals (Pa), which is equivalent to Newtons per square meter (N/m²)
-#Wear: Measured in meters per second (m/s) or another unit of wear rate
-#Friction: Dimensionless (ratio)
-
+# Material library with physical properties
 material_lib = {
-    "steel": {"density": 7850, "resistance": 200000000000, "wear": 0.000000001, "friction": 0.6},
-    "copper": {"density": 8960, "resistance": 167800000000, "wear": 0.000000002, "friction": 0.4},
-    "bronze": {"density": 8800, "resistance": 100000000000, "wear": 0.000000003, "friction": 0.5},
-    "aluminium": {"density": 2700, "resistance": 69000000000, "wear": 0.000000004, "friction": 0.6},
-    "titanium": {"density": 4500, "resistance": 110000000000, "wear": 0.000000005, "friction": 0.5},
-    "carbon_fiber": {"density": 1800, "resistance": 200000000000, "wear": 0.000000006, "friction": 0.4},
-    "glass": {"density": 2500, "resistance": 70000000000, "wear": 0.000000007, "friction": 0.9},
-    "rubber": {"density": 1200, "resistance": 100000000, "wear": 0.000000008, "friction": 1.0},
-    "plastic": {"density": 1000, "resistance": 3000000000, "wear": 0.000000009, "friction": 0.8},
-    "wood": {"density": 700, "resistance": 1000000000, "wear": 0.000000010, "friction": 0.7},
-    "water": {"density": 1000, "resistance": 0, "wear": 0, "friction": 0.01},
-    "air": {"density": 1.225, "resistance": 0, "wear": 0, "friction": 0.005},
-    "vacuum": {"density": 0, "resistance": 0, "wear": 0, "friction": 0},
-    "concrete": {"density": 2400, "resistance": 20000000000, "wear": 0.000000011, "friction": 0.6},
-    "granite": {"density": 2700, "resistance": 100000000000, "wear": 0.000000012, "friction": 0.6},
-    "marble": {"density": 2500, "resistance": 70000000000, "wear": 0.000000013, "friction": 0.6},
-    "ice": {"density": 917, "resistance": 2000000000, "wear": 0.000000014, "friction": 0.1},
-    "snow": {"density": 300, "resistance": 100000000, "wear": 0.000000015, "friction": 0.2},
-    }
-
-    
-
-
-        
+    "steel": {"density": 7850, "resistance": 200e9, "wear": 1e-9, "friction": 0.6},
+    "copper": {"density": 8960, "resistance": 167.8e9, "wear": 2e-9, "friction": 0.4},
+    "bronze": {"density": 8800, "resistance": 100e9, "wear": 3e-9, "friction": 0.5},
+    "aluminium": {"density": 2700, "resistance": 69e9, "wear": 4e-9, "friction": 0.6},
+    "titanium": {"density": 4500, "resistance": 110e9, "wear": 5e-9, "friction": 0.5},
+    "carbon_fiber": {"density": 1800, "resistance": 200e9, "wear": 6e-9, "friction": 0.4},
+    "glass": {"density": 2500, "resistance": 70e9, "wear": 7e-9, "friction": 0.9},
+    "rubber": {"density": 1200, "resistance": 100e6, "wear": 8e-9, "friction": 1.0},
+    "plastic": {"density": 1000, "resistance": 3e9, "wear": 9e-9, "friction": 0.8},
+    "wood": {"density": 700, "resistance": 1e9, "wear": 10e-9, "friction": 0.7},
+    "concrete": {"density": 2400, "resistance": 20e9, "wear": 11e-9, "friction": 0.6},
+    "granite": {"density": 2700, "resistance": 100e9, "wear": 12e-9, "friction": 0.6},
+    "marble": {"density": 2500, "resistance": 70e9, "wear": 13e-9, "friction": 0.6},
+    "ice": {"density": 917, "resistance": 2e9, "wear": 14e-9, "friction": 0.1},
+    "snow": {"density": 300, "resistance": 100e6, "wear": 15e-9, "friction": 0.2},
+}
 
