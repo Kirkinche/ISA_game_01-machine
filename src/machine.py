@@ -2,7 +2,6 @@
 from typing import Any
 from machine_component import MachineComponent
 
-
 class Machine:
     def __init__(self, name):
         self.name = name
@@ -85,3 +84,4 @@ class Machine:
             material_density = material_lib.get(component.material, {}).get("density", 0)
             impact += material_density * component.mass
         return impact
+    
