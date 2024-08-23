@@ -1,6 +1,7 @@
 import numpy as np
 import time
 import threading
+from MaterialOptimizerGA import MaterialOptimizerGA
 
 class MachineComponent:
     def __init__(self, name):
@@ -10,6 +11,8 @@ class MachineComponent:
         self.velocity = (0, 0, 0)  # m/s of the center of mass
         self.forces = {}  # dictionary of forces applied on the component
         self.acceleration = (0, 0, 0)  # m/s^2 of the center of mass
+        self.shape = [] #collection of vertx points
+        self.volume = 0 # in m^3
         self.momentum = (0, 0, 0)  # kg*m/s of the center of mass
         self.temperature = 25.0  # Initial temperature in Celsius
         self.pressure = 101.3  # Initial pressure in kPa
@@ -25,6 +28,10 @@ class MachineComponent:
         self.strain = 0
         self.wear = 0
         self.material = None
+        self.friction = 0  # Friction coefficient
+        self.cycles = 1e6   # Number of cycles for fatigue analysis
+        self.material_properties = {}
+
 
     def simulate_temperature(self):
         base_temp = 50  # Base temperature in Celsius
@@ -46,7 +53,7 @@ class MachineComponent:
                 pressure = base_pressure + np.random.normal(0, 0.05)
             self.pressure_sensor.append(pressure)
             time.sleep(1)
-            
+
     def simulate_vibration(self):
         while True:
             # Adjust vibration based on applied forces (simple harmonic response)
@@ -176,6 +183,17 @@ class MachineComponent:
             raise ValueError("Surface area is zero. Please set a valid surface area before calculating stress.")
         self.stress = force / self.surface_area
 
+    def update_temperature(self, external_temperature, internal_heat_generation):
+        # Dynamic temperature update
+        self.temperature = self.temperature + internal_heat_generation - (self.temperature - external_temperature) * 0.1
+
+    def update_dynamic_parameters(self, force, area, external_temperature, internal_heat_generation, time_interval):
+        self.surface_area = area
+        self.calculate_stress(force)
+        self.update_temperature(external_temperature, internal_heat_generation)
+        self.update_wear(time_interval)
+    
+
     def calculate_strain(self):
         youngs_modulus = 200e9  # Pa, for steel
         self.strain = self.stress / youngs_modulus
@@ -218,6 +236,30 @@ class MachineComponent:
             del self.forces[name]
         return self.net_force
 
+    #method for seting desired target properties for material design according to forces.
+    def derive_target_properties(self):
+        # Fatigue limit estimation, assuming the fatigue life is inversely proportional to cycles
+        fatigue_life_constant = 1e8  # Example constant, to be refined
+        fatigue_limit = self.stress / (self.cycles / fatigue_life_constant)
+        
+        # Derive target properties based on dynamic attributes
+        target_properties = {
+            "density": self.mass / self.volume if self.volume > 0 else 7000,
+            "resistance": self.stress * 1.5,  # 50% safety margin
+            "thermal_expansion": 1e-5,  # Example value based on thermal stability needs
+            "wear": self.wear / (self.friction + 1e-6),
+            "fatigue_limit": fatigue_limit
+        }
+        return target_properties   
+    
+
+    def optimize_material_ga(self, weight_factors):
+        target_properties = self.derive_target_properties()
+        material_optimizer_ga = MaterialOptimizerGA(material_lib)
+        optimized_material = material_optimizer_ga.optimize_material(target_properties, weight_factors)
+        self.material_properties = optimized_material
+        return optimized_material
+        
     def simulate(self, time_units):
         for _ in range(time_units):
             self.calculate_net_force() 

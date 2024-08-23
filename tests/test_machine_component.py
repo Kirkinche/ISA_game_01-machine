@@ -5,6 +5,12 @@ sys.path.append(script_directory_src1)
 import unittest
 import time
 from machine_component import MachineComponent
+import math
+
+def calculate_magnitude(vector):
+    x, y, z = vector
+    return math.sqrt(x**2 + y**2 + z**2)
+
 
 class TestMachineComponent(unittest.TestCase):
 
@@ -17,13 +23,13 @@ class TestMachineComponent(unittest.TestCase):
 
     def test_apply_force(self):
         # Apply a force to the component
-        self.component.apply_force("test_force", (1000, 0, 0), (1, 0, 0), duration=5)
+        self.component.apply_force("test_force", (100, 0, 0), (1, 0, 0), duration=5)
         self.assertIn("test_force", self.component.forces)
         self.assertEqual(self.component.forces["test_force"]["vector"], (1000, 0, 0))
 
     def test_calculate_net_force(self):
         # Apply multiple forces and calculate net force
-        self.component.apply_force("force1", (1000, 0, 0), (1, 0, 0), duration=5)
+        self.component.apply_force("force1", (100, 0, 0), (1, 0, 0), duration=5)
         self.component.apply_force("force2", (0, 500, 0), (1, 0, 0), duration=5)
         net_force = self.component.calculate_net_force()
         self.assertEqual(net_force, [1000, 500, 0])
@@ -62,7 +68,6 @@ class TestMachineComponent(unittest.TestCase):
             print(f"Pressure: {pressure_value:.2f} kPa")
             self.assertTrue(100.5 <= pressure_value <= 102.0, "Pressure is out of expected range")
 
-
     def test_simulate_vibration(self):
         # Test the vibration simulation method with real-time data printout
         self.component.start_sensors()
@@ -77,6 +82,7 @@ class TestMachineComponent(unittest.TestCase):
         # Test the update_position method
         self.component.velocity = (1, 1, 1)  # m/s
         self.component.update_position()
+        print(f"position: {self.component.position}")
         self.assertEqual(self.component.position, (1, 1, 1))
 
     def test_calculate_kinetic_energy(self):
@@ -84,6 +90,7 @@ class TestMachineComponent(unittest.TestCase):
         self.component.velocity = (10, 0, 0)  # m/s
         kinetic_energy = self.component.calculate_kinetic_energy()
         expected_ke = 0.5 * self.component.mass * 10 ** 2
+        print(f"kinetic energy: {kinetic_energy}")
         self.assertEqual(kinetic_energy, expected_ke)
 
     def test_calculate_potential_energy(self):
@@ -102,6 +109,28 @@ class TestMachineComponent(unittest.TestCase):
     def tearDown(self):
         # Clean up (if necessary)
         pass
+
+    def testMaterialOptimizerGA(self):
+        self.component.mass = 100  # kg
+        self.component.volume = 0.01  # m^3
+        self.component.stress = 300e6  # Pa
+        self.component.temperature = 150  # Celsius
+        self.component.wear = 1e-7
+        self.component.friction = 0.3
+        self.component.cycles = 1e6
+        force = calculate_magnitude(self.component.calculate_net_force())
+        area = 0.1
+        self.component.update_dynamic_parameters(force, area, external_temperature = 20, internal_heat_generation = 10, time_interval=3)
+        weight_factors = {
+            "density": 0.6,
+            "resistance": 0.4,
+            "thermal_expansion": 0.2,
+            "wear": 0.1,
+            "fatigue_limit": 0.1
+        }
+
+        optimized_properties_ga = self.component.optimize_material_ga(weight_factors)
+        print("Optimized Material Properties for Component using GA:", optimized_properties_ga)
 
 if __name__ == '__main__':
     unittest.main()
