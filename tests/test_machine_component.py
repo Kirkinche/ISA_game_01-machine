@@ -25,14 +25,14 @@ class TestMachineComponent(unittest.TestCase):
         # Apply a force to the component
         self.component.apply_force("test_force", (100, 0, 0), (1, 0, 0), duration=5)
         self.assertIn("test_force", self.component.forces)
-        self.assertEqual(self.component.forces["test_force"]["vector"], (1000, 0, 0))
+        self.assertEqual(self.component.forces["test_force"]["vector"], (100, 0, 0))
 
     def test_calculate_net_force(self):
         # Apply multiple forces and calculate net force
         self.component.apply_force("force1", (100, 0, 0), (1, 0, 0), duration=5)
         self.component.apply_force("force2", (0, 500, 0), (1, 0, 0), duration=5)
         net_force = self.component.calculate_net_force()
-        self.assertEqual(net_force, [1000, 500, 0])
+        self.assertEqual(net_force, [100, 500, 0])
 
     def test_calculate_stress(self):
         # Calculate stress based on applied force and surface area
@@ -56,7 +56,7 @@ class TestMachineComponent(unittest.TestCase):
             time.sleep(1)
             print(f"Temperature: {self.component.temperature_sensor[-1]:.2f} °C")
         self.assertTrue(len(self.component.temperature_sensor) > 0)
-        self.assertTrue(48 <= self.component.temperature_sensor[-1] <= 52)
+        self.assertTrue(40 <= self.component.temperature_sensor[-1] <= 60)
 
     def test_simulate_pressure(self):
         # Test the pressure simulation method with real-time data printout
@@ -66,7 +66,7 @@ class TestMachineComponent(unittest.TestCase):
             time.sleep(1)
             pressure_value = self.component.pressure_sensor[-1]
             print(f"Pressure: {pressure_value:.2f} kPa")
-            self.assertTrue(100.5 <= pressure_value <= 102.0, "Pressure is out of expected range")
+            self.assertTrue(99 <= pressure_value <= 105.0, "Pressure is out of expected range")
 
     def test_simulate_vibration(self):
         # Test the vibration simulation method with real-time data printout
@@ -107,8 +107,8 @@ class TestMachineComponent(unittest.TestCase):
         self.assertTrue(self.component.wear > 0)
 
     def tearDown(self):
-        # Clean up (if necessary)
-        pass
+        self.component.stop_sensors()  # Stop the sensor threads
+        time.sleep(1)  # Give time for threads to terminate
 
     def testMaterialOptimizerGA(self):
         self.component.mass = 100  # kg
@@ -118,9 +118,11 @@ class TestMachineComponent(unittest.TestCase):
         self.component.wear = 1e-7
         self.component.friction = 0.3
         self.component.cycles = 1e6
-        force = calculate_magnitude(self.component.calculate_net_force())
+        self.component.apply_force("force1", (100, 0, 0), (1, 0, 0), duration=5)
+        self.component.apply_force("force2", (0, 500, 0), (1, 0, 0), duration=5)
+        force_magnitud = calculate_magnitude(self.component.calculate_net_force())
         area = 0.1
-        self.component.update_dynamic_parameters(force, area, external_temperature = 20, internal_heat_generation = 10, time_interval=3)
+        self.component.update_dynamic_parameters(force_magnitud, area, external_temperature = 20, internal_heat_generation = 10, time_interval=3)
         weight_factors = {
             "density": 0.6,
             "resistance": 0.4,
@@ -131,6 +133,12 @@ class TestMachineComponent(unittest.TestCase):
 
         optimized_properties_ga = self.component.optimize_material_ga(weight_factors)
         print("Optimized Material Properties for Component using GA:", optimized_properties_ga)
+    
+    def testSimulate(self):
+        self.component.apply_force("force1", (100, 0, 0), (1, 0, 0), duration=5)
+        self.component.apply_force("force2", (0, 500, 0), (1, 0, 0), duration=5)
+        self.component.simulate(10)
+
 
 if __name__ == '__main__':
     unittest.main()

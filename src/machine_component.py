@@ -23,7 +23,7 @@ class MachineComponent:
         self.force_sensor = []
         self.rotation_speed_sensor = []
         self.current_sensor = []
-        self.surface_area = 0
+        self.surface_area = 0  # main cross_sectional_area of the component
         self.stress = 0
         self.strain = 0
         self.wear = 0
@@ -31,11 +31,12 @@ class MachineComponent:
         self.friction = 0  # Friction coefficient
         self.cycles = 1e6   # Number of cycles for fatigue analysis
         self.material_properties = {}
+        self.simulation_active = False  # Flag to control the sensor threads
 
 
     def simulate_temperature(self):
         base_temp = 50  # Base temperature in Celsius
-        while True:
+        while self.simulation_active:
             # Adjust base temperature with friction-induced heat (example)
             friction_heat = sum([np.linalg.norm(force["vector"]) for force in self.forces.values()]) * 0.001
             temp = base_temp + friction_heat + np.random.normal(0, 2)  # Add noise to simulate real data
@@ -44,8 +45,7 @@ class MachineComponent:
 
     def simulate_pressure(self):
         base_pressure = 101.3  # Base pressure in kPa
-        while True:
-            # Calculate pressure based on applied forces and area
+        while self.simulation_active:
             applied_force = np.linalg.norm(self.calculate_net_force())
             if self.surface_area > 0:
                 pressure = base_pressure + (applied_force / self.surface_area) + np.random.normal(0, 0.05)
@@ -55,20 +55,21 @@ class MachineComponent:
             time.sleep(1)
 
     def simulate_vibration(self):
-        while True:
+        while self.simulation_active:
             # Adjust vibration based on applied forces (simple harmonic response)
-            vibration = self.simulate_vibration_response(np.linalg.norm(self.calculate_net_force()), 0.1)
-            
-            # Add noise and ensure non-negative vibration intensity
+            vibration = self.simulate_vibration_response(np.linalg.norm(self.calculate_net_force()), 0.1) 
             vibration_with_noise = max(vibration + np.random.normal(0, 0.05), 0)
-            
             self.vibration_sensor.append(vibration_with_noise)
             time.sleep(1)
 
     def start_sensors(self):
+        self.simulation_active = True
         threading.Thread(target=self.simulate_temperature).start()
         threading.Thread(target=self.simulate_pressure).start()
         threading.Thread(target=self.simulate_vibration).start()
+
+    def stop_sensors(self):
+        self.simulation_active = False
 
     def calculate_net_force(self):
         """Calculates the sum of all forces acting on the component."""
@@ -178,18 +179,18 @@ class MachineComponent:
         total_wear_rate = base_wear_rate * stress_factor * strain_factor * time_interval
         self.wear += total_wear_rate
 
-    def calculate_stress(self, force):
+    def calculate_stress(self, force_magnitud):
         if self.surface_area == 0:
             raise ValueError("Surface area is zero. Please set a valid surface area before calculating stress.")
-        self.stress = force / self.surface_area
+        self.stress = force_magnitud / self.surface_area
 
     def update_temperature(self, external_temperature, internal_heat_generation):
         # Dynamic temperature update
         self.temperature = self.temperature + internal_heat_generation - (self.temperature - external_temperature) * 0.1
 
-    def update_dynamic_parameters(self, force, area, external_temperature, internal_heat_generation, time_interval):
+    def update_dynamic_parameters(self, force_magnitud, area, external_temperature, internal_heat_generation, time_interval):
         self.surface_area = area
-        self.calculate_stress(force)
+        self.calculate_stress(force_magnitud)
         self.update_temperature(external_temperature, internal_heat_generation)
         self.update_wear(time_interval)
     
@@ -234,7 +235,12 @@ class MachineComponent:
                 forces_to_remove.append(name)
         for name in forces_to_remove:
             del self.forces[name]
+        
+        # Update force sensor with the magnitude of the net force
+        self.force_sensor.append(np.linalg.norm(self.net_force))
+        
         return self.net_force
+
 
     #method for seting desired target properties for material design according to forces.
     def derive_target_properties(self):
@@ -259,8 +265,28 @@ class MachineComponent:
         optimized_material = material_optimizer_ga.optimize_material(target_properties, weight_factors)
         self.material_properties = optimized_material
         return optimized_material
-        
+    def update_temperature_sensor(self):
+        base_temp = 50  # Base temperature in Celsius
+        friction_heat = sum([np.linalg.norm(force["vector"]) for force in self.forces.values()]) * 0.001
+        temp = base_temp + friction_heat + np.random.normal(0, 2)  # Add noise to simulate real data
+        self.temperature_sensor.append(temp)
+
+    def update_pressure_sensor(self):
+        base_pressure = 101.3  # Base pressure in kPa
+        applied_force = np.linalg.norm(self.calculate_net_force())
+        if self.surface_area > 0:
+            pressure = base_pressure + (applied_force / self.surface_area) + np.random.normal(0, 0.05)
+        else:
+            pressure = base_pressure + np.random.normal(0, 0.05)
+        self.pressure_sensor.append(pressure)
+
+    def update_vibration_sensor(self):
+        vibration = self.simulate_vibration_response(np.linalg.norm(self.calculate_net_force()), 0.1) 
+        vibration_with_noise = max(vibration + np.random.normal(0, 0.05), 0)
+        self.vibration_sensor.append(vibration_with_noise)
+            
     def simulate(self, time_units):
+        self.start_sensors()
         for _ in range(time_units):
             self.calculate_net_force() 
             self.acceleration = tuple(f / self.mass for f in self.net_force)
@@ -271,7 +297,16 @@ class MachineComponent:
             self.calculate_potential_energy(gravity=9.8, reference_height=0)
             self.calculate_stress(sum(self.net_force))
             self.calculate_strain()
-            self.update_wear(time_units)
+            self.update_wear(1)
+
+            # Manually Update sensor data for this time unit
+            self.update_temperature_sensor()
+            self.update_pressure_sensor()
+            self.update_vibration_sensor()
+
+            print(f"data on force sensor : {self.force_sensor}, on pressure sensor: {self.pressure_sensor}, on temperature sensor: {self.temperature_sensor}") ,
+
+        self.stop_sensors()
     
 
 # Material library with physical properties
