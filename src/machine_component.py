@@ -2,16 +2,17 @@ import numpy as np
 import time
 import threading
 from MaterialOptimizerGA import MaterialOptimizerGA
+from library import material_lib, market_library
 
 class MachineComponent:
     def __init__(self, name):
         self.name = name
+        self.cost = 0  # Cost per unit
         self.mass = 0  # kg.
         self.position = (0, 0, 0)  # 3D coordinates (x, y, z) in meters
         self.velocity = (0, 0, 0)  # m/s of the center of mass
         self.forces = {}  # dictionary of forces applied on the component
         self.acceleration = (0, 0, 0)  # m/s^2 of the center of mass
-        self.shape = [] #collection of vertx points
         self.volume = 0 # in m^3
         self.momentum = (0, 0, 0)  # kg*m/s of the center of mass
         self.temperature = 25.0  # Initial temperature in Celsius
@@ -30,9 +31,12 @@ class MachineComponent:
         self.material = None
         self.friction = 0  # Friction coefficient
         self.cycles = 1e6   # Number of cycles for fatigue analysis
-        self.material_properties = {}
+        self.material_properties = {"density": 0, "resistance": 0, "wear": 0, "friction": 0} # dictionary of proprerties from the component material
         self.simulation_active = False  # Flag to control the sensor threads
+        self.mesh = None  # Mesh data for visualization
 
+    def set_mesh(self, mesh):
+        self.mesh = mesh
 
     def simulate_temperature(self):
         base_temp = 50  # Base temperature in Celsius
@@ -298,33 +302,13 @@ class MachineComponent:
             self.calculate_stress(sum(self.net_force))
             self.calculate_strain()
             self.update_wear(1)
-
             # Manually Update sensor data for this time unit
             self.update_temperature_sensor()
             self.update_pressure_sensor()
             self.update_vibration_sensor()
-
             print(f"data on force sensor : {self.force_sensor}, on pressure sensor: {self.pressure_sensor}, on temperature sensor: {self.temperature_sensor}") ,
 
         self.stop_sensors()
     
 
-# Material library with physical properties
-material_lib = {
-    "steel": {"density": 7850, "resistance": 200e9, "wear": 1e-9, "friction": 0.6},
-    "copper": {"density": 8960, "resistance": 167.8e9, "wear": 2e-9, "friction": 0.4},
-    "bronze": {"density": 8800, "resistance": 100e9, "wear": 3e-9, "friction": 0.5},
-    "aluminium": {"density": 2700, "resistance": 69e9, "wear": 4e-9, "friction": 0.6},
-    "titanium": {"density": 4500, "resistance": 110e9, "wear": 5e-9, "friction": 0.5},
-    "carbon_fiber": {"density": 1800, "resistance": 200e9, "wear": 6e-9, "friction": 0.4},
-    "glass": {"density": 2500, "resistance": 70e9, "wear": 7e-9, "friction": 0.9},
-    "rubber": {"density": 1200, "resistance": 100e6, "wear": 8e-9, "friction": 1.0},
-    "plastic": {"density": 1000, "resistance": 3e9, "wear": 9e-9, "friction": 0.8},
-    "wood": {"density": 700, "resistance": 1e9, "wear": 10e-9, "friction": 0.7},
-    "concrete": {"density": 2400, "resistance": 20e9, "wear": 11e-9, "friction": 0.6},
-    "granite": {"density": 2700, "resistance": 100e9, "wear": 12e-9, "friction": 0.6},
-    "marble": {"density": 2500, "resistance": 70e9, "wear": 13e-9, "friction": 0.6},
-    "ice": {"density": 917, "resistance": 2e9, "wear": 14e-9, "friction": 0.1},
-    "snow": {"density": 300, "resistance": 100e6, "wear": 15e-9, "friction": 0.2},
-}
 

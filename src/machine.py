@@ -1,11 +1,12 @@
 #this module create the machine object with its attributes and methods, for machinery and apparatus simulations.
 from typing import Any
-from machine_component import MachineComponent, material_lib
+from machine_component import MachineComponent, 
+from library import material_lib
 
 class Machine:
     def __init__(self, name):
         self.name = name
-        self.components = [MachineComponent(name)]
+        self.components = []
         self.status = "off"
         self.speed = 0
         self.power_consumption = 0

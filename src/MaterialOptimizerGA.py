@@ -8,17 +8,15 @@ class MaterialOptimizerGA:
         self.generations = generations
         self.mutation_rate = mutation_rate
         self.material_keys = ["density", "resistance", "thermal_expansion", "wear", "fatigue_limit"]  # Extend as needed
+
     def initialize_population(self):
         population = []
+
+        # Choose each individual from the material library
         for _ in range(self.population_size):
-            individual = {
-                "density": random.uniform(500, 8000),  # More realistic range for density
-                "resistance": random.uniform(50e9, 300e9),  # Resistance within a realistic range
-                "thermal_expansion": random.uniform(5e-6, 2.5e-5),  # Common thermal expansion coefficients
-                "wear": random.uniform(1e-9, 1e-7),  # Typical wear rates for metals
-                "fatigue_limit": random.uniform(50e6, 1e9)  # Realistic fatigue limits
-            }
+            individual = random.choice(list(self.material_lib.values()))
             population.append(individual)
+
         return population
     
     def fitness_function(self, individual, target_properties, weight_factors):
@@ -103,3 +101,4 @@ class MaterialOptimizerGA:
         best_individual = population[np.argmax(final_fitness_scores)]
         
         return best_individual
+
