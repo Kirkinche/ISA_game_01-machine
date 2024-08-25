@@ -3,19 +3,17 @@
 from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QLabel, QComboBox, QScrollArea, QListWidget, QListWidgetItem, QDialog, QFormLayout, QLineEdit, QDialogButtonBox, QFileDialog
 from PyQt6.QtCore import QTimer
 from main_mechanical import MechanicalSystemManager
+from CAD_visualization import CADVisualizer
 
 class MechanicalSystemGUI(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Mechanical System Manager")
-        self.setGeometry(100, 100, 400, 300)
-        self.simulation_running = False
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_sensor_data)
-       
+        self.setGeometry(100, 100, 800, 600)  # Increased width to accommodate the visualization panel
+
         # Initialize mechanical system manager
         self.manager = MechanicalSystemManager()
-        
+
         # Create main widget and layout
         self.main_widget = QWidget(self)
         self.setCentralWidget(self.main_widget)
@@ -24,10 +22,26 @@ class MechanicalSystemGUI(QMainWindow):
         # Machine selection
         self.machine_label = QLabel("Select Machine:", self)
         self.layout.addWidget(self.machine_label)
-        
+
         self.machine_combo = QComboBox(self)
+        self.machine_combo.currentIndexChanged.connect(self.populate_component_selector)
         self.layout.addWidget(self.machine_combo)
-        
+
+        # Component selection
+        self.component_label = QLabel("Select Component:", self)
+        self.layout.addWidget(self.component_label)
+
+        self.component_combo = QComboBox(self)
+        self.layout.addWidget(self.component_combo)
+
+        # Scroll Area for viewing components
+        self.scroll_area = QScrollArea(self)
+        self.scroll_area_widget = QWidget()
+        self.scroll_area.setWidget(self.scroll_area_widget)
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_layout = QVBoxLayout(self.scroll_area_widget)
+        self.layout.addWidget(self.scroll_area)
+
         # Buttons
         self.initialize_button = QPushButton("Initialize Machine", self)
         self.initialize_button.clicked.connect(self.initialize_machine)
@@ -40,10 +54,6 @@ class MechanicalSystemGUI(QMainWindow):
         self.run_simulation_button = QPushButton("Run Simulation", self)
         self.run_simulation_button.clicked.connect(self.run_simulation)
         self.layout.addWidget(self.run_simulation_button)
-        
-        self.stop_simulation_button = QPushButton("Stop Simulation", self)
-        self.stop_simulation_button.clicked.connect(self.stop_simulation)
-        self.layout.addWidget(self.stop_simulation_button)       
 
         self.modify_component_button = QPushButton("Modify Component", self)
         self.modify_component_button.clicked.connect(self.modify_component)
@@ -53,7 +63,6 @@ class MechanicalSystemGUI(QMainWindow):
         self.display_sensors_button.clicked.connect(self.display_sensors)
         self.layout.addWidget(self.display_sensors_button)
 
-        # Add Save and Load buttons
         self.save_button = QPushButton("Save Machine Data", self)
         self.save_button.clicked.connect(self.save_machine_data)
         self.layout.addWidget(self.save_button)
@@ -61,26 +70,62 @@ class MechanicalSystemGUI(QMainWindow):
         self.load_button = QPushButton("Load Machine Data", self)
         self.load_button.clicked.connect(self.load_machine_data)
         self.layout.addWidget(self.load_button)
+
+        self.visualize_component_button = QPushButton("Visualize Component", self)
+        self.visualize_component_button.clicked.connect(self.show_visualization)
+        self.layout.addWidget(self.visualize_component_button)
+
         self.output_label = QLabel("", self)
         self.layout.addWidget(self.output_label)
 
-        # Scroll area for displaying components
-        self.scroll_area = QScrollArea(self)
-        self.scroll_area.setWidgetResizable(True)
-        self.scroll_area_widget = QWidget()
-        self.scroll_area.setWidget(self.scroll_area_widget)
-        self.scroll_layout = QVBoxLayout(self.scroll_area_widget)
-        self.scroll_area.setMinimumHeight(100)  # Set minimum height
-        self.scroll_area.setMaximumHeight(200)  # Set maximum height
-        self.layout.addWidget(self.scroll_area)
+        # Visualization Panel
+        self.visualization_panel = None  # To hold the CADVisualizer instance
 
         self.refresh_machine_list()
 
-    def refresh_machine_list(self):
-        # Clear and update the machine combo box with valid machine names
-        self.machine_combo.clear()
-        valid_machine_names = machine_components.keys()  # Assuming machine_components is imported
-        self.machine_combo.addItems(valid_machine_names)
+    def populate_component_selector(self):
+        self.component_combo.clear()  # Clear existing items
+        machine_name = self.machine_combo.currentText()
+        if machine_name in self.manager.machines:
+            components = [component.name for component in self.manager.machines[machine_name].components]
+            self.component_combo.addItems(components)
+
+    def view_components(self):
+        machine_name = self.machine_combo.currentText()
+        components = self.manager.display_machine_components(machine_name)
+
+        # Clear the existing layout
+        for i in reversed(range(self.scroll_layout.count())):
+            widget_to_remove = self.scroll_layout.itemAt(i).widget()
+            if widget_to_remove is not None:
+                widget_to_remove.setParent(None)
+
+        # Add components to the layout
+        for component in components:
+            label = QLabel(component, self)
+            self.scroll_layout.addWidget(label)
+
+        self.output_label.setText(f"Components in '{machine_name}' displayed.")
+
+    def show_visualization(self):
+        if self.visualization_panel:
+            self.visualization_panel.setParent(None)  # Remove existing visualization
+
+        machine_name = self.machine_combo.currentText()
+        component_name = self.component_combo.currentText()
+
+        if machine_name and component_name:
+            component = None
+            for comp in self.manager.machines[machine_name].components:
+                if comp.name == component_name:
+                    component = comp
+                    break
+            if component and component.mesh:
+                self.visualization_panel = CADVisualizer(component, self.main_widget)
+                self.layout.addWidget(self.visualization_panel)
+                self.output_label.setText(f"Visualizing '{component_name}' of '{machine_name}'.")
+            else:
+                self.output_label.setText(f"Component '{component_name}' does not have a valid mesh for visualization.")
 
     def initialize_machine(self):
         machine_name = self.machine_combo.currentText()
@@ -90,29 +135,6 @@ class MechanicalSystemGUI(QMainWindow):
             self.refresh_machine_list()
         else:
             self.output_label.setText("No machine selected.")
-
-    def view_components(self):
-        machine_name = self.machine_combo.currentText()
-        components = self.manager.display_machine_components(machine_name)
-
-        # Check if the scroll_area_widget already has a layout
-        if self.scroll_area_widget.layout() is not None:
-            # Clear the existing layout
-            for i in reversed(range(self.scroll_area_widget.layout().count())):
-                widget_to_remove = self.scroll_area_widget.layout().itemAt(i).widget()
-                self.scroll_area_widget.layout().removeWidget(widget_to_remove)
-                widget_to_remove.setParent(None)
-        else:
-            # If no layout exists, create a new one
-            self.scroll_layout = QVBoxLayout(self.scroll_area_widget)
-            self.scroll_area_widget.setLayout(self.scroll_layout)
-
-        # Add components to the layout
-        for component in components:
-            label = QLabel(component, self)
-            self.scroll_area_widget.layout().addWidget(label)
-
-        self.output_label.setText(f"Components in '{machine_name}' displayed.")
 
     def modify_component(self):
         machine_name = self.machine_combo.currentText()
@@ -162,6 +184,7 @@ class MechanicalSystemGUI(QMainWindow):
             self.output_label.setText(f"Sensor Data for '{machine_name}':\n" + "\n".join(sensor_text))
         else:
             self.output_label.setText(f"No sensor data available for '{machine_name}'.")
+
     def save_machine_data(self):
         machine_name = self.machine_combo.currentText()
         if machine_name:
@@ -177,9 +200,16 @@ class MechanicalSystemGUI(QMainWindow):
         if file_path:
             self.manager.load_machine_data(file_path)
             self.refresh_machine_list()  # Refresh the machine list after loading new data
+            self.populate_component_selector()  # Populate components after loading
             self.output_label.setText(f"Machine data loaded from {file_path}.")
         else:
             self.output_label.setText("No file selected for loading.")
+    def refresh_machine_list(self):
+        # Clear and update the machine combo box with valid machine names
+        self.machine_combo.clear()
+        valid_machine_names = machine_components.keys()  # Assuming machine_components is imported
+        self.machine_combo.addItems(valid_machine_names)
+        self.populate_component_selector()  # Refresh components when machines are refreshed
             
 class ComponentEditorDialog(QDialog):
     def __init__(self, component):

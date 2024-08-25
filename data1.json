@@ -3,52 +3,31 @@
     "components": [
         {
             "name": "motor_block",
-            "cost": 0,
-            "mass": 10,
-            "position": [
-                0,
-                0,
-                0
-            ],
-            "velocity": [
-                0,
-                0,
-                0
-            ],
-            "forces": {},
-            "acceleration": [
-                0,
-                0,
-                0
-            ],
-            "volume": 0,
-            "momentum": [
-                0,
-                0,
-                0
-            ],
+            "cost": 0.0,
+            "mass": 10.0,
+            "position": "(0, 0, 0)",
+            "velocity": "(0, 0, 0)",
+            "forces": "{}",
+            "acceleration": "(0, 0, 0)",
+            "volume": 0.0,
+            "momentum": "(0, 0, 0)",
             "temperature": 25.0,
             "pressure": 101.3,
             "vibration_intensity": 0.0,
-            "temperature_sensor": [],
-            "pressure_sensor": [],
-            "vibration_sensor": [],
-            "force_sensor": [],
-            "rotation_speed_sensor": [],
-            "current_sensor": [],
-            "surface_area": 0,
-            "stress": 0,
-            "strain": 0,
-            "wear": 0,
-            "material": null,
-            "friction": 0,
+            "temperature_sensor": "[]",
+            "pressure_sensor": "[]",
+            "vibration_sensor": "[]",
+            "force_sensor": "[]",
+            "rotation_speed_sensor": "[]",
+            "current_sensor": "[]",
+            "surface_area": 10.0,
+            "stress": 0.0,
+            "strain": 0.0,
+            "wear": 0.0,
+            "material": "None",
+            "friction": 0.0,
             "cycles": 1000000.0,
-            "material_properties": {
-                "density": 0,
-                "resistance": 0,
-                "wear": 0,
-                "friction": 0
-            }
+            "material_properties": "{'density': 0, 'resistance': 0, 'wear': 0, 'friction': 0}"
         },
         {
             "name": "gearbox_block",
