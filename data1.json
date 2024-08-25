@@ -1,0 +1,4954 @@
+{
+    "name": "electric_motor",
+    "components": [
+        {
+            "name": "motor_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "gearbox_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "bearing_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "bearing_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "spring_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "spring_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "shaft_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "bolt_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "bolt_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "bolt_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "bolt_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "bolt_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "bolt_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "bolt_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "bolt_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "bolt_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "bolt_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "pulley_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "coupling_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "belt_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "screw_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "screw_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "screw_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "screw_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "screw_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "screw_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "screw_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "screw_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "screw_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "screw_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "screw_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "screw_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "screw_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "screw_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "screw_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "screw_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "screw_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "screw_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "screw_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "screw_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "washer_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "washer_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "washer_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "washer_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "washer_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "washer_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "washer_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "washer_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "washer_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "washer_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "washer_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "washer_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "washer_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "washer_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "washer_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "washer_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "washer_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "washer_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "washer_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "washer_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "nut_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "nut_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "nut_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "nut_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "nut_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "nut_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "nut_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "nut_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "nut_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "nut_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "nut_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "nut_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "nut_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "nut_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "nut_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "nut_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "nut_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "nut_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "nut_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "nut_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "disk_block",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "seal",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "seal",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "gasket",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "gasket",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "electrical_wiring",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "connector",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "connector",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "connector",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "connector",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "cooling_fan",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "temperature_sensor",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "pressure_sensor",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "mounting_bracket",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "mounting_bracket",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "mounting_bracket",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "mounting_bracket",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "clamp",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "clamp",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "clamp",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        },
+        {
+            "name": "clamp",
+            "cost": 0,
+            "mass": 10,
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "velocity": [
+                0,
+                0,
+                0
+            ],
+            "forces": {},
+            "acceleration": [
+                0,
+                0,
+                0
+            ],
+            "volume": 0,
+            "momentum": [
+                0,
+                0,
+                0
+            ],
+            "temperature": 25.0,
+            "pressure": 101.3,
+            "vibration_intensity": 0.0,
+            "temperature_sensor": [],
+            "pressure_sensor": [],
+            "vibration_sensor": [],
+            "force_sensor": [],
+            "rotation_speed_sensor": [],
+            "current_sensor": [],
+            "surface_area": 0,
+            "stress": 0,
+            "strain": 0,
+            "wear": 0,
+            "material": null,
+            "friction": 0,
+            "cycles": 1000000.0,
+            "material_properties": {
+                "density": 0,
+                "resistance": 0,
+                "wear": 0,
+                "friction": 0
+            }
+        }
+    ]
+}

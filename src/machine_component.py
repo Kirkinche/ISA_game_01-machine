@@ -288,8 +288,24 @@ class MachineComponent:
         vibration = self.simulate_vibration_response(np.linalg.norm(self.calculate_net_force()), 0.1) 
         vibration_with_noise = max(vibration + np.random.normal(0, 0.05), 0)
         self.vibration_sensor.append(vibration_with_noise)
-            
+
+    def validate_attributes(self):
+        errors = []
+        if self.mass <= 0:
+            errors.append("Mass is not set or invalid.")
+        if not hasattr(self, 'surface_area') or self.surface_area <= 0:
+            errors.append("Surface area is not set or invalid.")
+        if not hasattr(self, 'stiffness') or self.stiffness <= 0:
+            errors.append("Stiffness is not set or invalid.")
+        if not hasattr(self, 'damping') or self.damping < 0:
+            errors.append("Damping is not set or invalid.")
+        # Add more checks as necessary...
+        return errors
+
     def simulate(self, time_units):
+        validation_errors = self.validate_attributes()
+        if validation_errors:
+            raise ValueError(f"Component {self.name} cannot start simulation due to: " + ", ".join(validation_errors))
         self.start_sensors()
         for _ in range(time_units):
             self.calculate_net_force() 
@@ -309,6 +325,12 @@ class MachineComponent:
             print(f"data on force sensor : {self.force_sensor}, on pressure sensor: {self.pressure_sensor}, on temperature sensor: {self.temperature_sensor}") ,
 
         self.stop_sensors()
-    
+        
+    def update_properties(self, properties):
+        for key, value in properties.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
+            else:
+                raise AttributeError(f"{self.__class__.__name__} has no attribute '{key}'")
 
 

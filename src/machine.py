@@ -1,6 +1,6 @@
 #this module create the machine object with its attributes and methods, for machinery and apparatus simulations.
 from typing import Any
-from machine_component import MachineComponent, 
+from machine_component import MachineComponent
 from library import material_lib
 
 class Machine:
@@ -92,3 +92,8 @@ class Machine:
             component.simulate(time_units)
             # Update machine attributes based on component behavior
             # This could include updating speed, power consumption, wear, etc.
+    def get_component_by_name(self, name):
+        for component in self.components:
+            if component.name == name:
+                return component
+        return None
