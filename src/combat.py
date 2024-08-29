@@ -4,7 +4,7 @@ import random
 from character import Character
 
 class Combat:
-    def __init__(self, player = Character(race=Any, name=Any, gender=Any, job=Any, world_size=Any), enemy = Character(race=Any, name=Any, gender=Any, job=Any, world_size=Any), display_callback):
+    def __init__(self, player, enemy, display_callback):
         self.player = player
         self.enemy = enemy
         self.display_callback = display_callback  # Callback to display messages in the UI
@@ -14,14 +14,14 @@ class Combat:
         health_info += f"{self.enemy.name}'s Health: {self.enemy.current_health}/{self.enemy.max_health}\n"
         self.display_callback(health_info)
 
-    def attack(self, attacker = Character(race=Any, name=Any, gender=Any, job=Any, world_size=Any), defender= Character(race=Any, name=Any, gender=Any, job=Any, world_size=Any)):
+    def attack(self, attacker , defender):
         weapon_bonus = attacker.get_weapon_bonus() if hasattr(attacker, 'get_weapon_bonus') else 0
         armor_bonus = defender.get_armor_bonus() if hasattr(defender, 'get_armor_bonus') else 0
         damage = max(1, attacker.strength + weapon_bonus - defender.constitution // 2 - armor_bonus)
         defender.current_health -= damage
         self.display_callback(f"{attacker.name} attacks {defender.name} for {damage} damage!\n")
 
-    def defend(self, defender = Character(race=Any, name=Any, gender=Any, job=Any, world_size=Any)):
+    def defend(self, defender ):
         defense_boost = defender.constitution // 2
         defender.current_health += defense_boost
         self.display_callback(f"{defender.name} defends and recovers {defense_boost} health!\n")
@@ -56,7 +56,7 @@ class Combat:
             # Combat loop will be managed from the main window
             return "continue"
 
-    def use_skill(self, user = Character(race=Any, name=Any, gender=Any, job=Any, world_size=Any), target, skill_category, skill_name):
+    def use_skill(self, user , target, skill_category, skill_name):
         return user.use_skill(skill_category, skill_name, target)
     
     def end_battle(self, result):

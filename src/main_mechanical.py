@@ -122,41 +122,51 @@ class MechanicalSystemManager:
             # Reconstruct the machine from the loaded data
             machine_name = machine_data["name"]
             components_data = machine_data["components"]
-            components = [
-                MachineComponent(
-                    comp_data["name"],
-                    cost=comp_data.get("cost", 0),
-                    mass=comp_data.get("mass", 0),
-                    position=tuple(comp_data.get("position", (0, 0, 0))),
-                    velocity=tuple(comp_data.get("velocity", (0, 0, 0))),
-                    forces=comp_data.get("forces", {}),
-                    acceleration=tuple(comp_data.get("acceleration", (0, 0, 0))),
-                    volume=comp_data.get("volume", 0),
-                    momentum=tuple(comp_data.get("momentum", (0, 0, 0))),
-                    temperature=comp_data.get("temperature", 25.0),
-                    pressure=comp_data.get("pressure", 101.3),
-                    vibration_intensity=comp_data.get("vibration_intensity", 0.0),
-                    temperature_sensor=comp_data.get("temperature_sensor", []),
-                    pressure_sensor=comp_data.get("pressure_sensor", []),
-                    vibration_sensor=comp_data.get("vibration_sensor", []),
-                    force_sensor=comp_data.get("force_sensor", []),
-                    rotation_speed_sensor=comp_data.get("rotation_speed_sensor", []),
-                    current_sensor=comp_data.get("current_sensor", []),
-                    surface_area=comp_data.get("surface_area", 0),
-                    stress=comp_data.get("stress", 0),
-                    strain=comp_data.get("strain", 0),
-                    wear=comp_data.get("wear", 0),
-                    material=comp_data.get("material", None),
-                    friction=comp_data.get("friction", 0),
-                    cycles=comp_data.get("cycles", 1e6),
-                    material_properties=comp_data.get("material_properties", {"density": 0, "resistance": 0, "wear": 0, "friction": 0}),
-                )
-                for comp_data in components_data
-            ]
-            self.machines[machine_name] = Machine(name=machine_name, components=components)
+            components = []
+            i=0
+            for comp_data in components_data:                
+                component_load = MachineComponent(comp_data["name"])
+                component_load.cost = comp_data.get("cost", 0)
+                component_load.mass=comp_data.get("mass", 0),
+                component_load.position=tuple(comp_data.get("position", (0, 0, 0))),
+                component_load.velocity=tuple(comp_data.get("velocity", (0, 0, 0))),
+                component_load.forces=comp_data.get("forces", {}),
+                component_load.acceleration=tuple(comp_data.get("acceleration", (0, 0, 0))),
+                component_load.volume=comp_data.get("volume", 0),
+                component_load.momentum=tuple(comp_data.get("momentum", (0, 0, 0))),
+                component_load.temperature=comp_data.get("temperature", 25.0),
+                component_load.pressure=comp_data.get("pressure", 101.3),
+                component_load.vibration_intensity=comp_data.get("vibration_intensity", 0.0),
+                component_load.temperature_sensor=comp_data.get("temperature_sensor", []),
+                component_load.pressure_sensor=comp_data.get("pressure_sensor", []),
+                component_load.vibration_sensor=comp_data.get("vibration_sensor", []),
+                component_load.force_sensor=comp_data.get("force_sensor", []),
+                component_load.rotation_speed_sensor=comp_data.get("rotation_speed_sensor", []),
+                component_load.current_sensor=comp_data.get("current_sensor", []),
+                component_load.surface_area=comp_data.get("surface_area", 0),
+                component_load.stress=comp_data.get("stress", 0),
+                component_load.strain=comp_data.get("strain", 0),
+                component_load.wear=comp_data.get("wear", 0),
+                component_load.material=comp_data.get("material", None),
+                component_load.friction=comp_data.get("friction", 0),
+                component_load.cycles=comp_data.get("cycles", 1e6),
+                component_load.material_properties=comp_data.get("material_properties", {"density": 0, "resistance": 0, "wear": 0, "friction": 0}),
+                components.append(component_load)
+            self.machines[machine_name] = Machine(name=machine_name)
+            self.machines[machine_name].components = components    
             print(f"Machine '{machine_name}' loaded from {file_path}.")
 
-
+    def apply_force(self, machine_name, component_name, force_name, force_vector, contact_point, duration):
+        if machine_name in self.machines:
+            machine = self.machines[machine_name]
+            component = machine.get_component_by_name(component_name)
+            if component:
+                component.apply_force(force_name, force_vector, contact_point, duration)
+                print(f"Force '{force_name}' applied to '{component_name}' in '{machine_name}'.")
+            else:
+                print(f"Component '{component_name}' not found in '{machine_name}'.")
+        else:
+            print(f"Machine '{machine_name}' not found.") 
 
 # Example usage:
 if __name__ == "__main__":

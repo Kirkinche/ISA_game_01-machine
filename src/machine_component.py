@@ -2,6 +2,7 @@ import numpy as np
 import time
 import threading
 from MaterialOptimizerGA import MaterialOptimizerGA
+from dynamics import Dynamics
 from library import material_lib, market_library
 
 class MachineComponent:
@@ -9,9 +10,10 @@ class MachineComponent:
         self.name = name
         self.cost = 0  # Cost per unit
         self.mass = 0  # kg.
-        self.position = (0, 0, 0)  # 3D coordinates (x, y, z) in meters
+        self.position = (0, 0, 0)  # 3D coordinates (x, y, z) in meters of the center of mass
         self.velocity = (0, 0, 0)  # m/s of the center of mass
         self.forces = {}  # dictionary of forces applied on the component
+        self.torque = 0  # N*m of the center of mass
         self.acceleration = (0, 0, 0)  # m/s^2 of the center of mass
         self.volume = 0 # in m^3
         self.momentum = (0, 0, 0)  # kg*m/s of the center of mass
@@ -76,12 +78,23 @@ class MachineComponent:
         self.simulation_active = False
 
     def calculate_net_force(self):
-        """Calculates the sum of all forces acting on the component."""
-        net_force = [0, 0, 0]  # Reset net force
-        for force_data in self.forces.values():
-            net_force = [net_force[i] + force_data["vector"][i] for i in range(3)]
-        return net_force
+        self.net_force = [0, 0, 0]
+        forces_to_remove = []
+        for name, force_data in self.forces.items():
+            if force_data["duration"] > 0:
+                self.net_force = [self.net_force[i] + force_data["vector"][i] for i in range(3)]
+                force_data["duration"] -= 1
+            else:
+                forces_to_remove.append(name)
+        for name in forces_to_remove:
+            del self.forces[name]
+        
+        # Update force sensor with the magnitude of the net force
+        self.force_sensor.append(np.linalg.norm(self.net_force))
+        
+        return self.net_force
     
+
     def simulate_vibration_response(self, force, damping_coefficient):
         omega_n = self.calculate_natural_frequency()
         # Calculate amplitude and ensure it's non-negative
@@ -112,7 +125,8 @@ class MachineComponent:
             duration (int): The duration for which the force is applied (in time units, s.i., seconds).
         """
         if name in self.forces:
-            # Handle existing forces (e.g., update duration, modify vector)
+            self.forces[name]["vector"] = force_vector
+            self.forces[name]["contact_point"] = contact_point
             self.forces[name]["duration"] = duration
         else:
             self.forces[name] = {
@@ -120,20 +134,8 @@ class MachineComponent:
                 "contact_point": contact_point,
                 "duration": duration,
             }
-
-    def update_position(self):
-        self.position = tuple(p + v for p, v in zip(self.position, self.velocity))
-
-    def update_velocity(self):
-        self.velocity = tuple(v + a for v, a in zip(self.velocity, self.acceleration))
-
-    def update(self):
-        self.update_position()
-        self.update_velocity()
-
-    def calculate_momentum(self):
-        self.momentum = tuple(self.mass * v for v in self.velocity)
-
+        print(f"Force {name} applied with vector {force_vector}, contact {contact_point}, and duration {duration}.")
+    
     def calculate_friction_force(self, normal_force):
         material_name = self.material
         if material_name in material_lib:
@@ -142,19 +144,6 @@ class MachineComponent:
             return friction_force
         else:
             raise ValueError("Material not found in the material library.")
-
-    def detect_collision(self, other_component):
-        # Simple bounding box collision detection example
-        for vertex in self.geometry:
-            if vertex in other_component.geometry:
-                return True
-        return False
-
-    def resolve_collision(self, other_component):
-        # Assuming elastic collision for simplicity
-        if self.detect_collision(other_component):
-            # Exchange velocities along the collision normal
-            self.velocity, other_component.velocity = other_component.velocity, self.velocity
 
     def update_thermal_expansion(self):
         thermal_coefficient = 0.000012  # Example coefficient for steel
@@ -191,13 +180,32 @@ class MachineComponent:
     def update_temperature(self, external_temperature, internal_heat_generation):
         # Dynamic temperature update
         self.temperature = self.temperature + internal_heat_generation - (self.temperature - external_temperature) * 0.1
+    
+    def calculate_dynamics(self, time_interval):
+        self.dynamics = Dynamics.simulate_dynamics(self, time_interval)
+        self.kinetic_energy = self.dynamics["kinetic_energy"]
+        self.potential_energy = self.dynamics["potential_energy"]
+        self.rotational_kinetic_energy = self.dynamics["rotational_kinetic_energy"]
+        print(f"Kinetic Energy: {self.kinetic_energy}, Potential Energy: {self.potential_energy}, Rotational Kinetic Energy: {self.rotational_kinetic_energy}")
+        return {
+            "kinetic_energy": self.kinetic_energy,
+            "potential_energy": self.potential_energy,
+            "rotational_kinetic_energy": self.rotational_kinetic_energy
+        }
 
-    def update_dynamic_parameters(self, force_magnitud, area, external_temperature, internal_heat_generation, time_interval):
+    def update(self, time_interval):
+        Dynamics.update_position(self, time_interval)
+        Dynamics.update_velocity(self, time_interval)
+        self.torque= Dynamics.calculate_torque(self)
+        return self.position, self.velocity, self.acceleration, self.torque
+
+    def update_stress_parameters(self, area, external_temperature, internal_heat_generation, time_interval):
         self.surface_area = area
+        self.calculate_net_force()
+        force_magnitud=self.force_sensor
         self.calculate_stress(force_magnitud)
         self.update_temperature(external_temperature, internal_heat_generation)
         self.update_wear(time_interval)
-    
 
     def calculate_strain(self):
         youngs_modulus = 200e9  # Pa, for steel
@@ -220,55 +228,6 @@ class MachineComponent:
         self.stiffness = (youngs_modulus * cross_sectional_area) / length
         return self.stiffness
     
-    def calculate_kinetic_energy(self):
-        self.kinetic_energy = 0.5 * self.mass * sum(v ** 2 for v in self.velocity)
-        return self.kinetic_energy
-
-    def calculate_potential_energy(self, gravity, reference_height):
-        self.potential_energy = self.mass * gravity * (self.position[2] - reference_height)
-        return self.potential_energy
-
-    def calculate_net_force(self):
-        self.net_force = [0, 0, 0]
-        forces_to_remove = []
-        for name, force_data in self.forces.items():
-            if force_data["duration"] > 0:
-                self.net_force = [self.net_force[i] + force_data["vector"][i] for i in range(3)]
-                force_data["duration"] -= 1
-            else:
-                forces_to_remove.append(name)
-        for name in forces_to_remove:
-            del self.forces[name]
-        
-        # Update force sensor with the magnitude of the net force
-        self.force_sensor.append(np.linalg.norm(self.net_force))
-        
-        return self.net_force
-
-
-    #method for seting desired target properties for material design according to forces.
-    def derive_target_properties(self):
-        # Fatigue limit estimation, assuming the fatigue life is inversely proportional to cycles
-        fatigue_life_constant = 1e8  # Example constant, to be refined
-        fatigue_limit = self.stress / (self.cycles / fatigue_life_constant)
-        
-        # Derive target properties based on dynamic attributes
-        target_properties = {
-            "density": self.mass / self.volume if self.volume > 0 else 7000,
-            "resistance": self.stress * 1.5,  # 50% safety margin
-            "thermal_expansion": 1e-5,  # Example value based on thermal stability needs
-            "wear": self.wear / (self.friction + 1e-6),
-            "fatigue_limit": fatigue_limit
-        }
-        return target_properties   
-    
-
-    def optimize_material_ga(self, weight_factors):
-        target_properties = self.derive_target_properties()
-        material_optimizer_ga = MaterialOptimizerGA(material_lib)
-        optimized_material = material_optimizer_ga.optimize_material(target_properties, weight_factors)
-        self.material_properties = optimized_material
-        return optimized_material
     def update_temperature_sensor(self):
         base_temp = 50  # Base temperature in Celsius
         friction_heat = sum([np.linalg.norm(force["vector"]) for force in self.forces.values()]) * 0.001
@@ -310,11 +269,9 @@ class MachineComponent:
         for _ in range(time_units):
             self.calculate_net_force() 
             self.acceleration = tuple(f / self.mass for f in self.net_force)
-            self.update_velocity()
-            self.update_position()
             self.acceleration = (0, 0, 0) 
-            self.calculate_kinetic_energy()
-            self.calculate_potential_energy(gravity=9.8, reference_height=0)
+            self.update()
+            self.calculate_dynamics
             self.calculate_stress(sum(self.net_force))
             self.calculate_strain()
             self.update_wear(1)
@@ -325,12 +282,37 @@ class MachineComponent:
             print(f"data on force sensor : {self.force_sensor}, on pressure sensor: {self.pressure_sensor}, on temperature sensor: {self.temperature_sensor}") ,
 
         self.stop_sensors()
-        
+
+    #method for seting desired target properties for material design according to forces.
+
     def update_properties(self, properties):
         for key, value in properties.items():
             if hasattr(self, key):
                 setattr(self, key, value)
             else:
                 raise AttributeError(f"{self.__class__.__name__} has no attribute '{key}'")
+            
+    def derive_target_properties(self):
+        # Fatigue limit estimation, assuming the fatigue life is inversely proportional to cycles
+        fatigue_life_constant = 1e8  # Example constant, to be refined
+        fatigue_limit = self.stress / (self.cycles / fatigue_life_constant)
+        
+        # Derive target properties based on dynamic attributes
+        target_properties = {
+            "density": self.mass / self.volume if self.volume > 0 else 7000,
+            "resistance": self.stress * 1.5,  # 50% safety margin
+            "thermal_expansion": 1e-5,  # Example value based on thermal stability needs
+            "wear": self.wear / (self.friction + 1e-6),
+            "fatigue_limit": fatigue_limit
+        }
+        return target_properties   
+    
+    def optimize_material_ga(self, weight_factors):
+        target_properties = self.derive_target_properties()
+        material_optimizer_ga = MaterialOptimizerGA(material_lib)
+        optimized_material = material_optimizer_ga.optimize_material(target_properties, weight_factors)
+        self.material_properties = optimized_material
+        return optimized_material
+    
 
 

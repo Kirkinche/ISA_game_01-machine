@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QVBoxLayout, Q
 from character import create_character, Character
 from world import GameWorld
 from save_load import save_game, load_game
-from combat import Combat, create_enemy
+from combat import Combat
 from town import Town
 import trading
 import skills as skills_module
@@ -163,7 +163,7 @@ class MainGameWindow(QMainWindow):
         self.update_map_display()
 
     def enter_dungeon(self):
-        self.enemy = create_enemy()
+        self.enemy = Combat.create_enemy()
         self.combat = Combat(self.player, self.enemy, self.append_output)
         self.context_display.setText("You have encountered an enemy! Available commands: 'attack', 'defend', 'escape'")
         self.command_input.returnPressed.disconnect()

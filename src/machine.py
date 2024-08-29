@@ -29,7 +29,10 @@ class Machine:
 
     def calculate_power_consumption(self, time_period):
         """Calculates the power consumption of the machine based on the kinetic energy of its components."""
-        total_kinetic_energy = sum(component.calculate_kinetic_energy() for component in self.components)
+        total_kinetic_energy = 0 
+        for component in self.components:
+            component.calculate_dynamics(time_period)  # Assuming this method calculates the kinetic energy of the component
+            total_kinetic_energy += component.kinetic_energy
         power_consumption = total_kinetic_energy / time_period  # Power = Energy / Time
         return power_consumption
 

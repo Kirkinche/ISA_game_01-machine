@@ -2,7 +2,7 @@
 
 import random
 from procedural_map import Map
-from combat import Combat, create_enemy
+from combat import Combat
 from treasures import get_random_treasure
 from town import Town
 
@@ -11,7 +11,7 @@ class GameWorld:
         self.size = size
         self.map = Map(size)
         self.map.place_points_of_interest()
-        self.town = Town()
+        self.town = Town("New Town")
 
     def display_map(self):
         self.map.display_map()
@@ -103,7 +103,7 @@ class GameWorld:
 
     def interact_dungeon(self, player):
         print("You have found a dungeon. Prepare for battle!")
-        enemy = create_enemy()
+        enemy = Combat.create_enemy()
         combat = Combat(player, enemy)
         result = combat.start_battle()
         if result == "escape":
