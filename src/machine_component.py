@@ -9,13 +9,13 @@ class MachineComponent:
     def __init__(self, name):
         self.name = name
         self.cost = 0  # Cost per unit
-        self.mass = 0  # kg.
+        self.mass = 1  # kg.
         self.position = (0, 0, 0)  # 3D coordinates (x, y, z) in meters of the center of mass
         self.velocity = (0, 0, 0)  # m/s of the center of mass
         self.forces = {}  # dictionary of forces applied on the component
         self.torque = 0  # N*m of the center of mass
         self.acceleration = (0, 0, 0)  # m/s^2 of the center of mass
-        self.volume = 0 # in m^3
+        self.volume = 1 # in m^3
         self.momentum = (0, 0, 0)  # kg*m/s of the center of mass
         self.temperature = 25.0  # Initial temperature in Celsius
         self.pressure = 101.3  # Initial pressure in kPa
@@ -26,14 +26,15 @@ class MachineComponent:
         self.force_sensor = []
         self.rotation_speed_sensor = []
         self.current_sensor = []
-        self.surface_area = 0  # main cross_sectional_area of the component
+        self.surface_area = 1  # main cross_sectional_area of the component
+        self.stiffness = 200000
         self.stress = 0
         self.strain = 0
         self.wear = 0
         self.material = None
         self.friction = 0  # Friction coefficient
         self.cycles = 1e6   # Number of cycles for fatigue analysis
-        self.material_properties = {"density": 0, "resistance": 0, "wear": 0, "friction": 0} # dictionary of proprerties from the component material
+        self.material_properties = {"density": 0, "resistance": 0, "wear": 0, "friction": 0, "thermal_expansion": 0, "fatigue_limit": 0} # dictionary of proprerties from the component material
         self.simulation_active = False  # Flag to control the sensor threads
         self.mesh = None  # Mesh data for visualization
 
@@ -110,7 +111,7 @@ class MachineComponent:
     def calculate_natural_frequency(self):
         if self.mass == 0:
             raise ValueError("Mass is zero. Please set a valid mass before calculating the natural frequency.")
-        stiffness = 200000  # Example stiffness, in N/m
+        stiffness = self.stiffness  # Example stiffness, in N/m
         natural_frequency = (1 / (2 * np.pi)) * ((stiffness / self.mass) ** 0.5)
         return natural_frequency
 
@@ -146,7 +147,7 @@ class MachineComponent:
             raise ValueError("Material not found in the material library.")
 
     def update_thermal_expansion(self):
-        thermal_coefficient = 0.000012  # Example coefficient for steel
+        thermal_coefficient = self.material_properties.get("thermal_expansion", 0.000012)  # Example coefficient for steel
         delta_temperature = self.temperature - 20  # Assuming 20°C as reference
         expansion_factor = 1 + thermal_coefficient * delta_temperature
         self.geometry = [(x * expansion_factor, y * expansion_factor, z * expansion_factor) for x, y, z in self.geometry]
@@ -186,7 +187,8 @@ class MachineComponent:
         self.kinetic_energy = self.dynamics["kinetic_energy"]
         self.potential_energy = self.dynamics["potential_energy"]
         self.rotational_kinetic_energy = self.dynamics["rotational_kinetic_energy"]
-        print(f"Kinetic Energy: {self.kinetic_energy}, Potential Energy: {self.potential_energy}, Rotational Kinetic Energy: {self.rotational_kinetic_energy}")
+        print(f"dynamics calculated for component {self.name}")
+        #print(f"Kinetic Energy: {self.kinetic_energy}, Potential Energy: {self.potential_energy}, Rotational Kinetic Energy: {self.rotational_kinetic_energy}")
         return {
             "kinetic_energy": self.kinetic_energy,
             "potential_energy": self.potential_energy,
@@ -229,13 +231,13 @@ class MachineComponent:
         return self.stiffness
     
     def update_temperature_sensor(self):
-        base_temp = 50  # Base temperature in Celsius
+        base_temp = self.temperature  # Base temperature in Celsius
         friction_heat = sum([np.linalg.norm(force["vector"]) for force in self.forces.values()]) * 0.001
         temp = base_temp + friction_heat + np.random.normal(0, 2)  # Add noise to simulate real data
         self.temperature_sensor.append(temp)
 
     def update_pressure_sensor(self):
-        base_pressure = 101.3  # Base pressure in kPa
+        base_pressure = self.pressure  # Base pressure in kPa
         applied_force = np.linalg.norm(self.calculate_net_force())
         if self.surface_area > 0:
             pressure = base_pressure + (applied_force / self.surface_area) + np.random.normal(0, 0.05)
@@ -248,6 +250,25 @@ class MachineComponent:
         vibration_with_noise = max(vibration + np.random.normal(0, 0.05), 0)
         self.vibration_sensor.append(vibration_with_noise)
 
+    def calculate_damping(self):
+        """
+        Calculate the damping value based on the mass, volume, and resistance of the material.
+        """
+        if self.mass == 0 or self.volume == 0:
+            raise ValueError("Mass and Volume must be non-zero to calculate damping.")
+
+        if not self.material:
+            raise ValueError("Material must be defined to calculate damping.")
+
+        # Example: Using resistance from material library (could be Young's modulus, yield strength, etc.)
+        material_resistance = material_lib[self.material].get("resistance", 1e6)  # Default to 1e6 if not found
+
+        # Calculate damping using the proposed formula
+        k = 0.01  # Example scaling factor; this should be adjusted based on your specific application
+        self.damping = k * np.sqrt((material_resistance * self.volume) / self.mass)
+        
+        return self.damping
+
     def validate_attributes(self):
         errors = []
         if self.mass <= 0:
@@ -256,22 +277,26 @@ class MachineComponent:
             errors.append("Surface area is not set or invalid.")
         if not hasattr(self, 'stiffness') or self.stiffness <= 0:
             errors.append("Stiffness is not set or invalid.")
-        if not hasattr(self, 'damping') or self.damping < 0:
-            errors.append("Damping is not set or invalid.")
-        # Add more checks as necessary...
+        if not hasattr(self, 'damping') or self.damping <= 0:
+            try:
+                self.calculate_damping()
+            except Exception as e:
+                errors.append(f"Damping calculation error: {str(e)}")
         return errors
 
-    def simulate(self, time_units):
+
+    def simulate(self, time_duration):
+        self.calculate_dynamics
         validation_errors = self.validate_attributes()
         if validation_errors:
             raise ValueError(f"Component {self.name} cannot start simulation due to: " + ", ".join(validation_errors))
         self.start_sensors()
-        for _ in range(time_units):
+        for _ in range(time_duration):
+            self.acceleration = (0, 0, 0) 
             self.calculate_net_force() 
             self.acceleration = tuple(f / self.mass for f in self.net_force)
-            self.acceleration = (0, 0, 0) 
-            self.update()
-            self.calculate_dynamics
+            self.calculate_damping
+            self.update(1)
             self.calculate_stress(sum(self.net_force))
             self.calculate_strain()
             self.update_wear(1)
@@ -279,7 +304,8 @@ class MachineComponent:
             self.update_temperature_sensor()
             self.update_pressure_sensor()
             self.update_vibration_sensor()
-            print(f"data on force sensor : {self.force_sensor}, on pressure sensor: {self.pressure_sensor}, on temperature sensor: {self.temperature_sensor}") ,
+            print(f"name: {self.name} on position: {self.position}")
+            #print(f"data on force sensor : {self.force_sensor}, on pressure sensor: {self.pressure_sensor}, on temperature sensor: {self.temperature_sensor}, position of component: {self.position}, velocity: {self.velocity}") ,
 
         self.stop_sensors()
 

@@ -127,7 +127,7 @@ class MainWindow(QMainWindow):
             self.png_x += increment
             self.png_x = min(self.width() - 100, self.png_x)  # Ensure it doesn't go off-screen
         self.overlay.move_png(0, (self.png_x, self.png_y))
-        self.overlay.rotate_png(0, 1)  
+        #self.overlay.rotate_png(0, 1)  
 
     
 

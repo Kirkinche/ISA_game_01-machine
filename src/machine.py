@@ -89,10 +89,10 @@ class Machine:
             impact += material_density * component.mass
         return impact
     
-    def simulate(self, time_units):
+    def simulate(self, time_duration):
         """Simulates the machine's behavior over a given number of time units."""
         for component in self.components:
-            component.simulate(time_units)
+            component.simulate(time_duration)
             # Update machine attributes based on component behavior
             # This could include updating speed, power consumption, wear, etc.
     def get_component_by_name(self, name):
