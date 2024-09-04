@@ -1,5 +1,6 @@
 # dynamics.py
 
+import math
 import numpy as np
 
 class Dynamics:
@@ -9,10 +10,21 @@ class Dynamics:
         Update the velocity of the component using the net force applied and time interval.
         v = u + at
         """
-        net_force = component.calculate_net_force()
+        net_force = component.net_force
         component.acceleration = tuple(f / component.mass for f in net_force)
         component.velocity = tuple(v + a * time_interval for v, a in zip(component.velocity, component.acceleration))
         return component.velocity
+
+    @staticmethod
+    def update_contact_points(component):
+        """
+        Update the contact points relative to the current position of the component.
+        """
+        for force_data in component.forces.values():
+            # Adjust the contact point relative to the new position
+            force_data["contact_point"] = tuple(cp - pos for cp, pos in zip(force_data["contact_point"], component.position))
+
+
 
     @staticmethod
     def update_position(component, time_interval):
@@ -22,19 +34,23 @@ class Dynamics:
         """
         component.position = tuple(p + v * time_interval + 0.5 * a * time_interval ** 2 
                                    for p, v, a in zip(component.position, component.velocity, component.acceleration))
+        # Update the contact points relative to the new position
+        Dynamics.update_contact_points(component)
         return component.position
 
     @staticmethod
     def calculate_torque(component):
         """
-        Calculate torque based on applied forces and their moments arm from the center of mass.
+        Calculate torque based on applied forces and their moments arm from the center of mass. As a vector of np.
         τ = r × F
         """
         torque = np.array([0.0, 0.0, 0.0])
+        if not component.forces: return (0.0, 0.0, 0.0)
         for force in component.forces.values():
             torque += np.cross(force["contact_point"], force["vector"])
-        return torque
-
+         # Convert to a tuple with native Python floats
+        return tuple(float(t) for t in torque)
+    
     @staticmethod
     def calculate_kinetic_energy(component):
         """
@@ -56,11 +72,21 @@ class Dynamics:
     @staticmethod
     def calculate_rotational_kinetic_energy(component):
         """
-        Calculate the rotational kinetic energy for rotating components.
-        KE_rotational = 0.5 * I * ω^2
+        Calculate the rotational kinetic energy of the component.
         """
-        moment_of_inertia = component.mass * (component.surface_area ** 2) / 12  # Simplified for rectangular prism
-        rotational_kinetic_energy = 0.5 * moment_of_inertia * (component.torque ** 2)
+        # Use the vector torque
+        torque = component.torque if component.torque is not None else (0.0, 0.0, 0.0)
+        # Calculate the magnitude (scalar value) of the torque vector
+        torque_magnitude = math.sqrt(sum(t**2 for t in torque))
+        # Calculate the moment of inertia (specify the axis if necessary)
+        moment_of_inertia = component.calculate_moment_of_inertia(axis='z')
+        
+        # Calculate angular velocity ω from the scalar torque τ and moment of inertia I
+        angular_velocity = torque_magnitude / moment_of_inertia
+        
+        # Rotational kinetic energy: KE_rot = 0.5 * I * ω^2
+        rotational_kinetic_energy = 0.5 * moment_of_inertia * (angular_velocity ** 2)
+        
         return rotational_kinetic_energy
 
     @staticmethod
@@ -114,8 +140,8 @@ class Dynamics:
         Run a full dynamic simulation for a component over a time interval.
         This includes updating position, velocity, and calculating energies.
         """
-        Dynamics.update_velocity(component, time_interval)
-        Dynamics.update_position(component, time_interval)
+        #Dynamics.update_velocity(component, time_interval)
+        #Dynamics.update_position(component, time_interval)
         kinetic_energy = Dynamics.calculate_kinetic_energy(component)
         potential_energy = Dynamics.calculate_potential_energy(component, gravity, reference_height)
         rotational_kinetic_energy = Dynamics.calculate_rotational_kinetic_energy(component)

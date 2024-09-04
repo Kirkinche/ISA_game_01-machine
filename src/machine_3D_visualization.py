@@ -1,22 +1,24 @@
+
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QHBoxLayout
 from PyQt6.QtOpenGLWidgets import QOpenGLWidget
-from OpenGL.GL import * 
+from PyQt6.QtCore import QTimer
+from OpenGL.GL import *
 from OpenGL.GLU import *
-import numpy as np
+import math
 from machine_component import MachineComponent
 from assembler import Assembler
 from machine import Machine
-import math
+import numpy as np
 
 class Machine3DVisualization(QOpenGLWidget):
-    def __init__(self, components, connections, camera_position=(0, 0, 10), look_at_point=(0, 0, 0), up_vector=(0, 1, 0), parent=None):
+    def __init__(self, components, connections, camera_position=(0, 0, 10), look_at_point=(0, 0, 0), camera_up_vector=(0, 0, 1), parent=None):
         super().__init__(parent)
         self.components = components
         self.connections = connections
         self.camera_position = camera_position
         self.look_at_point = look_at_point
-        self.up_vector = up_vector
+        self.camera_up_vector = camera_up_vector
 
     def initializeGL(self):
         glClearColor(1.0, 1.0, 1.0, 1.0)  # Set background color to white
@@ -28,21 +30,21 @@ class Machine3DVisualization(QOpenGLWidget):
         glLoadIdentity()
         gluPerspective(45, w / h, 0.1, 50.0)  # Field of view, aspect ratio, near, far
         glMatrixMode(GL_MODELVIEW)
-        
+
     def paintGL(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glLoadIdentity()
         gluLookAt(
             *self.camera_position,  # Camera position
             *self.look_at_point,     # Look-at point
-            *self.up_vector          # Up vector
+            *self.camera_up_vector          # Up vector
         )
 
-        glColor3f(0.9, 0.6, 0.2)  # Set drawing color to yellow-orange (black is (0, 0, 0))
+        glColor3f(0.9, 0.6, 0.2)  # Set drawing color to yellow-orange
 
         # Draw components as cylinders
         for component in self.components:
-            self.draw_cylinder(component.position, radius=0.5, height=1)  # Standard cylinder size
+            self.draw_cylinder(position = component.position, radius=0.5, height=1, upvector = component.upvector)
 
         # Draw connections as lines from component positions to relative positions
         glBegin(GL_LINES)
@@ -66,22 +68,39 @@ class Machine3DVisualization(QOpenGLWidget):
             glVertex3fv(line_start_pos2)
         glEnd()
 
-    def draw_cylinder(self, position, radius, height):
-        """
-        Draw a cylinder centered at `position` with the given `radius` and `height`.
-        """
+    def draw_cylinder(self, position, radius, height, upvector):
         num_segments = 12  # Number of segments to approximate the circular base
         half_height = height / 2.0
+
+        # Normalize the upvector
+        upvector = np.array(upvector)
+        upvector = upvector / np.linalg.norm(upvector)
+
+        # Default cylinder direction (along the z-axis)
+        default_dir = np.array([0, 0, 1])
+
+        # Calculate the rotation axis and angle
+        rotation_axis = np.cross(default_dir, upvector)
+        rotation_angle = np.arccos(np.dot(default_dir, upvector))
+
+        # Convert the rotation axis and angle to degrees
+        rotation_angle_degrees = np.degrees(rotation_angle)
+
+        # Apply rotation to align cylinder with the upvector
+        glPushMatrix()
+        glTranslatef(position[0], position[1], position[2])
+        if np.linalg.norm(rotation_axis) > 1e-6:  # Avoid invalid rotation if axis is zero
+            glRotatef(rotation_angle_degrees, rotation_axis[0], rotation_axis[1], rotation_axis[2])
 
         # Draw the top and bottom circles
         for z in [-half_height, half_height]:
             glBegin(GL_TRIANGLE_FAN)
-            glVertex3f(position[0], position[1], position[2] + z)  # Center of the circle
+            glVertex3f(0, 0, z)  # Center of the circle
             for i in range(num_segments + 1):
                 angle = 2 * math.pi * i / num_segments
-                x = position[0] + radius * math.cos(angle)
-                y = position[1] + radius * math.sin(angle)
-                glVertex3f(x, y, position[2] + z)
+                x = radius * math.cos(angle)
+                y = radius * math.sin(angle)
+                glVertex3f(x, y, z)
             glEnd()
 
         # Draw the side of the cylinder
@@ -90,28 +109,133 @@ class Machine3DVisualization(QOpenGLWidget):
             angle = 2 * math.pi * i / num_segments
             x = radius * math.cos(angle)
             y = radius * math.sin(angle)
-            glVertex3f(position[0] + x, position[1] + y, position[2] - half_height)
-            glVertex3f(position[0] + x, position[1] + y, position[2] + half_height)
+            glVertex3f(x, y, -half_height)
+            glVertex3f(x, y, half_height)
         glEnd()
 
-class MainWindow(QMainWindow):
-    def __init__(self, components, connections):
+        # Restore the previous matrix state
+        glPopMatrix()
+
+class AnimationSceneWidget(QWidget):
+    def __init__(self, components, connections, time_interval, total_time, camera_position=(0, 0, 10), look_at_point=(0, 0, 0)):
         super().__init__()
-        self.setWindowTitle("3D Machine Visualization")
-        self.setGeometry(100, 100, 800, 600)
+
+        self.components = components
+        self.connections = connections
+        self.time_interval = time_interval
+        self.total_time = total_time
+        self.current_time = 0
+
+        self.visualization = Machine3DVisualization(components, connections, camera_position, look_at_point)
         
-        camera_position = (5, 5, 10)  # Example camera position
-        look_at_point = (0, 0, 0)     # Example look-at point
-        up_vector = (0, 1, 0)         # Default up vector (y-axis)
+        # Create the layout
+        layout = QVBoxLayout()
+        layout.addWidget(self.visualization)
 
-        self.visualization = Machine3DVisualization(components, connections, camera_position, look_at_point, up_vector)
-        self.setCentralWidget(self.visualization)
+        # Add buttons
+        self.play_button = QPushButton("Play")
+        self.stop_button = QPushButton("Stop")
+        self.play_button.clicked.connect(self.start_animation)
+        self.stop_button.clicked.connect(self.stop_animation)
+        
+        # Add buttons to layout
+        button_layout = QHBoxLayout()
+        button_layout.addWidget(self.play_button)
+        button_layout.addWidget(self.stop_button)
+        layout.addLayout(button_layout)
 
-def run_visualization(components, connections, camera_position, look_at_point):
+        self.setLayout(layout)
+
+        # Set up the timer for animation
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_animation)
+
+    def start_animation(self):
+        self.timer.start(int(self.time_interval * 1000))  # Start the timer with time_interval in milliseconds
+
+    def stop_animation(self):
+        self.timer.stop()  # Stop the timer
+
+    def update_animation(self):
+        if self.current_time < self.total_time:
+            self.current_time += self.time_interval
+            assembler.calculate_dynamics(self.time_interval)
+            self.visualization.update()  # Repaint the visualization
+        else:
+            self.timer.stop()  # Stop the animation when the total time is reached
+
+class DirectAnimationWidget(QWidget):
+    def __init__(self, components, connections, time_interval, total_time, camera_position=(0, 0, 10), look_at_point=(0, 0, 0), positions = [{"component1":(0,0,0)}, {"component2":(0,0,0)}], upvectors = [{"component1":(0,0,1)}, {"component2":(0,0,1)}]):
+        super().__init__()
+        self.positions = positions
+        self.upvectors = upvectors
+        self.components = components
+        self.connections = connections
+        self.time_interval = time_interval
+        self.total_time = total_time
+        self.current_time = 0
+
+        self.visualization = Machine3DVisualization(components, connections, camera_position, look_at_point)
+        
+        # Create the layout
+        layout = QVBoxLayout()
+        layout.addWidget(self.visualization)
+
+        # Add buttons
+        self.play_button = QPushButton("Play")
+        self.stop_button = QPushButton("Stop")
+        self.play_button.clicked.connect(self.start_animation)
+        self.stop_button.clicked.connect(self.stop_animation)
+        
+        # Add buttons to layout
+        button_layout = QHBoxLayout()
+        button_layout.addWidget(self.play_button)
+        button_layout.addWidget(self.stop_button)
+        layout.addLayout(button_layout)
+
+        self.setLayout(layout)
+
+        # Set up the timer for animation
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_animation)
+
+    def start_animation(self):
+        self.timer.start(int(self.time_interval * 1000))  # Start the timer with time_interval in milliseconds
+
+    def stop_animation(self):
+        self.timer.stop()  # Stop the timer
+
+    def update_animation(self):
+        if self.current_time < self.total_time:
+            position = self.positions[int(self.current_time)]
+            upvector = self.upvectors[int(self.current_time)]
+
+            for component in self.components:
+                component.position = position[component.name]
+                component.upvector = upvector[component.name]
+
+            self.current_time += self.time_interval
+            self.visualization.update()  # Repaint the visualization
+        else:
+            self.timer.stop()  # Stop the animation when the total time is reached
+
+class MainWindow(QMainWindow):
+    def __init__(self, components, connections, time_interval, total_time, positions, upvectors):
+        super().__init__()
+        self.setWindowTitle("3D Machine Animation")
+        self.setGeometry(100, 100, 800, 600)
+
+        self.animation_widget = DirectAnimationWidget(components, connections, time_interval, total_time, positions, upvectors)
+        #self.animation_widget = AnimationSceneWidget(components, connections, time_interval, total_time)
+        self.setCentralWidget(self.animation_widget)
+
+def run_animation(components, connections, time_interval, total_time, camera_position, look_at_point, positions, upvectors):
     app = QApplication(sys.argv)
-    window = MainWindow(components, connections)
-    window.visualization.camera_position = camera_position
-    window.visualization.look_at_point = look_at_point
+    window = MainWindow(components, connections, time_interval, total_time, positions, upvectors)
+    window.animation_widget.visualization.camera_position = camera_position
+    window.animation_widget.visualization.look_at_point = look_at_point
+    window.animation_widget.positions = positions
+    window.animation_widget.upvectors = upvectors
     window.show()
     sys.exit(app.exec())
 
@@ -127,17 +251,17 @@ if __name__ == "__main__":
     component2.material = "steel"
     component3.material = "steel"
     
-    #placing the component in the 3D space:
+    # Placing the component in the 3D space
     component1.position = (0, 0, 0)
-    component2.position = (2, 0, 0)
-    component3.position = (4, 0, 0)
+    component2.position = (1, 0, 1)
+    component3.position = (3, 3, 0)
 
-
+    
     # Add components to machine
     machine.add_component(component1)
     machine.add_component(component2)
     machine.add_component(component3)
-
+    
     # Create assembler
     assembler = Assembler(machine)
 
@@ -146,17 +270,18 @@ if __name__ == "__main__":
     slider_dof = {'translation': ['x']}
 
     # Add connections with DOF and relative positions
-    assembler.add_connection(component1, component2, "hinge", hinge_dof, relative_position1=(0, 1, 2), relative_position2=(1, 0, 0.5))
-    assembler.add_connection(component2, component3, "slider", slider_dof, relative_position1=(0, 0, 2.5), relative_position2=(0, 3, 0))
-    assembler.calculate_dynamics(1)
+    assembler.add_connection(component1, component2, "hinge", hinge_dof, relative_position1=(0, 0, 1), relative_position2=(0, 1, 0))
+    assembler.add_connection(component2, component3, "slider", slider_dof, relative_position1=(2, 0, 0), relative_position2=(0, 0, 2))
 
+    component1.apply_force("init1", (-1, 1, 0),(0, 0, 0.1), 4)
+    component2.apply_force("init2", (0, 0, 1),(0.1, 0, 0), 2)
     connections = assembler.connections
     components = machine.components
 
     # Example camera and look-at settings
-    camera_position = (10, 10, 10)
+    camera_position = (30, 30, 30)
     look_at_point = (0, 0, 0)
-
-    # Run the visualization
-    run_visualization(components, connections, camera_position, look_at_point)
-
+    positions, upvectors = machine.simulate(10)
+    
+    # Run the animation
+    run_animation(components, connections, time_interval=1, total_time=3, camera_position=camera_position, look_at_point=look_at_point, positions=positions, upvectors=upvectors)

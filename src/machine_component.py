@@ -10,12 +10,16 @@ class MachineComponent:
         self.name = name
         self.cost = 0  # Cost per unit
         self.mass = 1  # kg.
+        self.radius = 0.5  # m.
+        self.length = 1 # m.
+        self.volume = 1 # in m^3
         self.position = (0, 0, 0)  # 3D coordinates (x, y, z) in meters of the center of mass
+        self.upvector = (0, 1, 0)  # Up vector for the component
         self.velocity = (0, 0, 0)  # m/s of the center of mass
         self.forces = {}  # dictionary of forces applied on the component
-        self.torque = 0  # N*m of the center of mass
+        self.net_force = (0, 0, 0)  # N of the center of mass
+        self.torque = (0, 0, 0)  # Vector N*m of the center of mass
         self.acceleration = (0, 0, 0)  # m/s^2 of the center of mass
-        self.volume = 1 # in m^3
         self.momentum = (0, 0, 0)  # kg*m/s of the center of mass
         self.temperature = 25.0  # Initial temperature in Celsius
         self.pressure = 101.3  # Initial pressure in kPa
@@ -53,7 +57,7 @@ class MachineComponent:
     def simulate_pressure(self):
         base_pressure = 101.3  # Base pressure in kPa
         while self.simulation_active:
-            applied_force = np.linalg.norm(self.calculate_net_force())
+            applied_force = np.linalg.norm(self.net_force)
             if self.surface_area > 0:
                 pressure = base_pressure + (applied_force / self.surface_area) + np.random.normal(0, 0.05)
             else:
@@ -64,7 +68,7 @@ class MachineComponent:
     def simulate_vibration(self):
         while self.simulation_active:
             # Adjust vibration based on applied forces (simple harmonic response)
-            vibration = self.simulate_vibration_response(np.linalg.norm(self.calculate_net_force()), 0.1) 
+            vibration = self.simulate_vibration_response(np.linalg.norm(self.net_force), 0.1) 
             vibration_with_noise = max(vibration + np.random.normal(0, 0.05), 0)
             self.vibration_sensor.append(vibration_with_noise)
             time.sleep(1)
@@ -135,7 +139,8 @@ class MachineComponent:
                 "contact_point": contact_point,
                 "duration": duration,
             }
-        print(f"Force {name} applied with vector {force_vector}, contact {contact_point}, and duration {duration}.")
+        self.torque = Dynamics.calculate_torque(self) 
+        print(f"For component: {self.name} Force {name} applied with vector {force_vector}, contact {contact_point}, and duration {duration}.")
     
     def calculate_friction_force(self, normal_force):
         material_name = self.material
@@ -196,14 +201,33 @@ class MachineComponent:
         }
 
     def update(self, time_interval):
+        self.calculate_net_force()
+        self.update_torque()
         Dynamics.update_position(self, time_interval)
         Dynamics.update_velocity(self, time_interval)
-        self.torque= Dynamics.calculate_torque(self)
+        print (f"data of component update with position: {self.position}, velocity: {self.velocity}, torque: {self.torque}, forces: {self.forces}")
         return self.position, self.velocity, self.acceleration, self.torque
+    
+    def update_torque(self):
+        """
+        Update the vector torque value based on the forces applied to the component.
+        """
+        self.torque = Dynamics.calculate_torque(self)
 
+    def calculate_moment_of_inertia(self, axis='z'):
+        # Example moment of inertia calculation as before
+        if axis == 'z':
+            moment_of_inertia = 0.5 * self.mass * self.radius ** 2
+        elif axis == 'x' or axis == 'y':
+            moment_of_inertia = (1/12) * self.mass * (3 * self.radius ** 2 + self.length ** 2)
+        else:
+            raise ValueError(f"Unsupported axis '{axis}' for moment of inertia calculation.")
+        
+        return moment_of_inertia
+    
     def update_stress_parameters(self, area, external_temperature, internal_heat_generation, time_interval):
         self.surface_area = area
-        self.calculate_net_force()
+        #self.calculate_net_force()
         force_magnitud=self.force_sensor
         self.calculate_stress(force_magnitud)
         self.update_temperature(external_temperature, internal_heat_generation)
@@ -216,7 +240,7 @@ class MachineComponent:
     def calculate_velocity_after_time(self, time_interval):
         if self.mass == 0:
             raise ValueError("Mass is zero. Please set a valid mass before calculating velocity.")
-        net_force = self.calculate_net_force()
+        net_force = self.net_force
         self.acceleration = tuple(f / self.mass for f in net_force)
         self.velocity = tuple(v + a * time_interval for v, a in zip(self.velocity, self.acceleration))
         return self.velocity
@@ -238,7 +262,7 @@ class MachineComponent:
 
     def update_pressure_sensor(self):
         base_pressure = self.pressure  # Base pressure in kPa
-        applied_force = np.linalg.norm(self.calculate_net_force())
+        applied_force = np.linalg.norm(self.net_force)
         if self.surface_area > 0:
             pressure = base_pressure + (applied_force / self.surface_area) + np.random.normal(0, 0.05)
         else:
@@ -246,7 +270,7 @@ class MachineComponent:
         self.pressure_sensor.append(pressure)
 
     def update_vibration_sensor(self):
-        vibration = self.simulate_vibration_response(np.linalg.norm(self.calculate_net_force()), 0.1) 
+        vibration = self.simulate_vibration_response(np.linalg.norm(self.net_force), 0.1) 
         vibration_with_noise = max(vibration + np.random.normal(0, 0.05), 0)
         self.vibration_sensor.append(vibration_with_noise)
 
@@ -290,13 +314,19 @@ class MachineComponent:
         validation_errors = self.validate_attributes()
         if validation_errors:
             raise ValueError(f"Component {self.name} cannot start simulation due to: " + ", ".join(validation_errors))
+        # Initialize lists to store positions and upvectors
+        positions = []
+        upvectors = []
         self.start_sensors()
         for _ in range(time_duration):
             self.acceleration = (0, 0, 0) 
-            self.calculate_net_force() 
+            self.update(1)
             self.acceleration = tuple(f / self.mass for f in self.net_force)
             self.calculate_damping
-            self.update(1)
+            # Store the current position and upvector
+            positions.append({'name': self.name, 'position': self.position})
+            upvectors.append({'name': self.name, 'upvector': self.upvector})
+    
             self.calculate_stress(sum(self.net_force))
             self.calculate_strain()
             self.update_wear(1)
@@ -308,8 +338,8 @@ class MachineComponent:
             #print(f"data on force sensor : {self.force_sensor}, on pressure sensor: {self.pressure_sensor}, on temperature sensor: {self.temperature_sensor}, position of component: {self.position}, velocity: {self.velocity}") ,
 
         self.stop_sensors()
-
-    #method for seting desired target properties for material design according to forces.
+        # Return the positions and upvectors for visualization
+        return positions, upvectors
 
     def update_properties(self, properties):
         for key, value in properties.items():

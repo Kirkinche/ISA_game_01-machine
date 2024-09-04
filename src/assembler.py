@@ -1,3 +1,4 @@
+
 from machine import Machine
 from machine_component import MachineComponent
 from dynamics import Dynamics
@@ -87,8 +88,6 @@ class Assembler:
             elif connection_type == "slider":
                 self._apply_slider_connection(component1, component2, degrees_of_freedom, relative_position1, relative_position2)
 
-            component1.calculate_dynamics(time_interval)
-            component2.calculate_dynamics(time_interval)
 
         # Handle multi-component connections
         for connection in self.multi_component_connections:
@@ -103,8 +102,6 @@ class Assembler:
                 self._apply_bi_directional_connection(components, degrees_of_freedom, relative_positions)
             # Add additional connection types here
 
-            for component in components:
-                component.calculate_dynamics(time_interval)
 
     def simulate(self, time_interval, total_time):
         """
@@ -125,24 +122,88 @@ class Assembler:
         component2.position = corrected_position
         component2.velocity = component1.velocity
         component2.acceleration = component1.acceleration
+        
+            
+        # Calculate and apply reaction forces
+        reaction_force_vector = []
+        for i in range(3):  # Assuming 3D space (x, y, z)
+            reaction_force = (component2.mass * component2.acceleration[i]) - (component1.mass * component1.acceleration[i]) 
+            reaction_force_vector.append(reaction_force)
+
+        # Apply reaction forces directly to the forces dictionary of each component
+        component1.apply_force(
+            name="fixed_connection_reaction",
+            force_vector=tuple(-f for f in reaction_force_vector),  # Apply in the opposite direction
+            contact_point=relative_position1,
+            duration=1
+        )
+        component2.apply_force(
+            name="fixed_connection_reaction",
+            force_vector=tuple(reaction_force_vector),  # Apply in the correct direction
+            contact_point=relative_position2,
+            duration=1
+        )
+
         print(f"Fixed connection applied between {component1.name} and {component2.name} at relative positions {relative_position1} and {relative_position2}.")
+        print(f"Reaction forces applied: {reaction_force_vector}")# Calculate the reaction force to maintain the fixed connection
 
     def _apply_hinge_connection(self, component1, component2, degrees_of_freedom, relative_position1, relative_position2):
         """
         Apply hinge connection constraints between two components.
-        This restricts relative motion to rotational movement around specific axes.
+        This restricts relative motion to rotational movement around specific axes and calculates the necessary reaction forces and torques.
         """
+        # Correct the position of component2 based on the hinge connection
         corrected_position = tuple(c1 + rp1 + rp2 for c1, rp1, rp2 in zip(component1.position, relative_position1, relative_position2))
         component2.position = corrected_position
 
         # Adjust velocity and acceleration based on allowed DOF
-        if 'rotation' in degrees_of_freedom:
-            if 'z' not in degrees_of_freedom['rotation']:
-                component2.velocity = (component1.velocity[0], component1.velocity[1], 0)
-                component2.acceleration = (component1.acceleration[0], component1.acceleration[1], 0)
-            # Handle other axes if needed
+        new_velocity = list(component2.velocity)
+        new_acceleration = list(component2.acceleration)
+
+        for axis, idx in zip(['x', 'y', 'z'], range(3)):
+            if 'rotation' in degrees_of_freedom:
+                if axis not in degrees_of_freedom['rotation']:
+                    new_velocity[idx] = 0  # Restrict velocity if rotation around this axis is not allowed
+                    new_acceleration[idx] = 0  # Restrict acceleration as well
+
+        component2.velocity = tuple(new_velocity)
+        component2.acceleration = tuple(new_acceleration)
+
+        # Calculate and apply reaction forces and torques to maintain the hinge constraint
+        for i, axis in enumerate(['x', 'y', 'z']):
+            if axis not in degrees_of_freedom.get('rotation', []):
+                # Calculate the reaction force to prevent rotation around this axis
+                reaction_force = (component2.mass * component2.acceleration[i]) - (component1.mass * component1.acceleration[i])
+
+                # Apply the reaction force to both components
+                force_name = f"hinge_reaction_force_{axis}"
+                component1.apply_force(
+                    name=force_name,
+                    force_vector=tuple(-reaction_force if j == i else 0.0 for j in range(3)),
+                    contact_point=relative_position1,
+                    duration=1
+                )
+                component2.apply_force(
+                    name=force_name,
+                    force_vector=tuple(reaction_force if j == i else 0.0 for j in range(3)),
+                    contact_point=relative_position2,
+                    duration=1
+                )
+
+                # Calculate torque: τ = r × F, where r is the position vector, F is the reaction force vector
+                r_vector = tuple(cp2 - cp1 for cp1, cp2 in zip(relative_position1, relative_position2))
+                torque_vector = (
+                    r_vector[1] * reaction_force - r_vector[2] * reaction_force,  # Torque around x-axis
+                    r_vector[2] * reaction_force - r_vector[0] * reaction_force,  # Torque around y-axis
+                    r_vector[0] * reaction_force - r_vector[1] * reaction_force   # Torque around z-axis
+                )
+                
+                # Update the torque for both components
+                component1.torque = component1.update_torque()
+                component2.torque = component2.update_torque()
 
         print(f"Hinge connection applied between {component1.name} and {component2.name} with DOF: {degrees_of_freedom} at relative positions {relative_position1} and {relative_position2}.")
+
 
     def _apply_slider_connection(self, component1, component2, degrees_of_freedom, relative_position1, relative_position2):
         """
@@ -153,11 +214,22 @@ class Assembler:
         component2.position = corrected_position
 
         # Adjust velocity and acceleration based on allowed DOF
+        new_velocity = list(component2.velocity)
+        new_acceleration = list(component2.acceleration)
+
         if 'translation' in degrees_of_freedom:
             if 'x' not in degrees_of_freedom['translation']:
-                component2.velocity = (0, component1.velocity[1], component1.velocity[2])
-                component2.acceleration = (0, component1.acceleration[1], component1.acceleration[2])
-            # Handle other axes if needed
+                new_velocity[0] = 0
+                new_acceleration[0] = 0
+            if 'y' not in degrees_of_freedom['translation']:
+                new_velocity[1] = 0
+                new_acceleration[1] = 0
+            if 'z' not in degrees_of_freedom['translation']:
+                new_velocity[2] = 0
+                new_acceleration[2] = 0
+
+        component2.velocity = tuple(new_velocity)
+        component2.acceleration = tuple(new_acceleration)
 
         print(f"Slider connection applied between {component1.name} and {component2.name} with DOF: {degrees_of_freedom} at relative positions {relative_position1} and {relative_position2}.")
 
@@ -173,7 +245,10 @@ if __name__ == "__main__":
     component1.material = "steel"
     component2.material = "steel"
     component3.material = "steel"
-    
+    component1.apply_force("init", (-10, 5, 0),(0, 0, 0.2), 4)
+    component2.apply_force("init2", (0, 0, -0.1),(1, 0, 0), 2)    
+    #component1.acceleration = (0,1,0)
+    #component2.acceleration = (0,3,1)
     # Add components to machine
     machine.add_component(component1)
     machine.add_component(component2)
@@ -187,8 +262,6 @@ if __name__ == "__main__":
     slider_dof = {'translation': ['x']}
 
     # Add connections with DOF and relative positions
-    assembler.add_connection(component1, component2, "hinge", hinge_dof, relative_position1=(0, 0, 1), relative_position2=(0, 0, 0.5))
+    assembler.add_connection(component1, component2, "hinge", hinge_dof, relative_position1=(0, 0, 1), relative_position2=(0, 0, 1.5))
     assembler.add_connection(component2, component3, "slider", slider_dof, relative_position1=(0, 0, 0.5), relative_position2=(0, 0, 0))
 
-    # Run simulation
-    assembler.simulate(time_interval=1, total_time=10)
