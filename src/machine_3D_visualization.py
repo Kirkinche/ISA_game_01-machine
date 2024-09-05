@@ -159,13 +159,13 @@ class AnimationSceneWidget(QWidget):
     def update_animation(self):
         if self.current_time < self.total_time:
             self.current_time += self.time_interval
-            assembler.calculate_dynamics(self.time_interval)
+            #assembler.calculate_dynamics(self.time_interval)
             self.visualization.update()  # Repaint the visualization
         else:
             self.timer.stop()  # Stop the animation when the total time is reached
 
 class DirectAnimationWidget(QWidget):
-    def __init__(self, components, connections, time_interval, total_time, camera_position=(0, 0, 10), look_at_point=(0, 0, 0), positions = [{"component1":(0,0,0)}, {"component2":(0,0,0)}], upvectors = [{"component1":(0,0,1)}, {"component2":(0,0,1)}]):
+    def __init__(self, components, connections, time_interval, total_time, camera_position=(0, 0, 10), look_at_point=(0, 0, 0), positions = [], upvectors = []):
         super().__init__()
         self.positions = positions
         self.upvectors = upvectors
@@ -253,8 +253,8 @@ if __name__ == "__main__":
     
     # Placing the component in the 3D space
     component1.position = (0, 0, 0)
-    component2.position = (1, 0, 1)
-    component3.position = (3, 3, 0)
+    component2.position = (0, 0, 0)
+    component3.position = (0, 0, 0)
 
     
     # Add components to machine
@@ -262,26 +262,24 @@ if __name__ == "__main__":
     machine.add_component(component2)
     machine.add_component(component3)
     
-    # Create assembler
-    assembler = Assembler(machine)
-
     # Define degrees of freedom
     hinge_dof = {'rotation': ['z']}
     slider_dof = {'translation': ['x']}
 
     # Add connections with DOF and relative positions
-    assembler.add_connection(component1, component2, "hinge", hinge_dof, relative_position1=(0, 0, 1), relative_position2=(0, 1, 0))
-    assembler.add_connection(component2, component3, "slider", slider_dof, relative_position1=(2, 0, 0), relative_position2=(0, 0, 2))
-
-    component1.apply_force("init1", (-1, 1, 0),(0, 0, 0.1), 4)
-    component2.apply_force("init2", (0, 0, 1),(0.1, 0, 0), 2)
-    connections = assembler.connections
+    machine.assembler.add_connection(machine.components[0], machine.components[1], "hinge", hinge_dof, relative_position1=(0, 0, 1), relative_position2=(0, 1, 0))
+    machine.assembler.add_connection(machine.components[1], machine.components[2], "slider", slider_dof, relative_position1=(2, 0, 0), relative_position2=(0, 0, 2))
+    component1.apply_force("init1", (-0.1, 0, 0),(0, 0, 1), 4)
+    component2.apply_force("init2", (0, 0, 0.1),(1, 0, 0), 2)
+    connections = machine.assembler.connections
     components = machine.components
 
+    print(connections[0]["component2"].position)
     # Example camera and look-at settings
-    camera_position = (30, 30, 30)
+    camera_position = (20, 20, 20)
     look_at_point = (0, 0, 0)
     positions, upvectors = machine.simulate(10)
     
+    print(positions)
     # Run the animation
-    run_animation(components, connections, time_interval=1, total_time=3, camera_position=camera_position, look_at_point=look_at_point, positions=positions, upvectors=upvectors)
+    run_animation(components, connections, time_interval=1, total_time=10, camera_position=camera_position, look_at_point=look_at_point, positions=positions, upvectors=upvectors)
