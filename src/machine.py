@@ -336,7 +336,7 @@ class Machine:
             i = 0
             for component in self.components:
                 if component.name == "Ground":  # Skip the ground component
-                    continue
+                   component.calculate_dynamics(1)
                 else:
                     component.calculate_dynamics(1)
                     validation_errors = component.validate_attributes()

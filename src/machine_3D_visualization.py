@@ -12,10 +12,10 @@ from machine import Machine
 import numpy as np
 
 class Machine3DVisualization(QOpenGLWidget):
-    def __init__(self, components, connections, camera_position=(0, 0, 10), look_at_point=(0, 0, 0), camera_up_vector=(0, 0, 1), parent=None):
+    def __init__(self, machine, camera_position=(0, 0, 10), look_at_point=(0, 0, 0), camera_up_vector=(0, 0, 1), parent=None):
         super().__init__(parent)
-        self.components = components
-        self.connections = connections
+        self.components = machine.components
+        self.connections = machine.connections
         self.camera_position = camera_position
         self.look_at_point = look_at_point
         self.camera_up_vector = camera_up_vector
@@ -49,8 +49,16 @@ class Machine3DVisualization(QOpenGLWidget):
         # Draw connections as lines from component positions to relative positions
         glBegin(GL_LINES)
         for conn in self.connections:
-            component1_pos = conn['component1'].position
-            component2_pos = conn['component2'].position
+            component1_name = conn['component1']
+            component2_name = conn['component2']
+            for component in self.components:
+                if component.name == component1_name:
+                    component1 = component
+            for component in self.components:
+                if component.name == component2_name:
+                    component2 = component
+            component1_pos = component1.position
+            component2_pos = component2.position
 
             relative_position1 = conn['relative_position1']
             relative_position2 = conn['relative_position2']
@@ -117,16 +125,13 @@ class Machine3DVisualization(QOpenGLWidget):
         glPopMatrix()
 
 class AnimationSceneWidget(QWidget):
-    def __init__(self, components, connections, time_interval, total_time, camera_position=(0, 0, 10), look_at_point=(0, 0, 0)):
+    def __init__(self, machine, time_interval, total_time, camera_position=(0, 0, 10), look_at_point=(0, 0, 0)):
         super().__init__()
-
-        self.components = components
-        self.connections = connections
         self.time_interval = time_interval
         self.total_time = total_time
         self.current_time = 0
 
-        self.visualization = Machine3DVisualization(components, connections, camera_position, look_at_point)
+        self.visualization = Machine3DVisualization(machine, camera_position, look_at_point)
         
         # Create the layout
         layout = QVBoxLayout()
@@ -165,17 +170,17 @@ class AnimationSceneWidget(QWidget):
             self.timer.stop()  # Stop the animation when the total time is reached
 
 class DirectAnimationWidget(QWidget):
-    def __init__(self, components, connections, time_interval, total_time, camera_position=(0, 0, 10), look_at_point=(0, 0, 0), positions = [], upvectors = []):
+    def __init__(self, machine, time_interval, total_time, camera_position=(0, 0, 10), look_at_point=(0, 0, 0), positions = [], upvectors = []):
         super().__init__()
         self.positions = positions
         self.upvectors = upvectors
-        self.components = components
-        self.connections = connections
+        #self.components = components
+        #self.connections = connections
         self.time_interval = time_interval
         self.total_time = total_time
         self.current_time = 0
 
-        self.visualization = Machine3DVisualization(components, connections, camera_position, look_at_point)
+        self.visualization = Machine3DVisualization(machine, camera_position, look_at_point)
         
         # Create the layout
         layout = QVBoxLayout()
@@ -210,7 +215,7 @@ class DirectAnimationWidget(QWidget):
             position = self.positions[int(self.current_time)]
             upvector = self.upvectors[int(self.current_time)]
 
-            for component in self.components:
+            for component in machine.components:
                 component.position = position[component.name]
                 component.upvector = upvector[component.name]
 
@@ -220,18 +225,18 @@ class DirectAnimationWidget(QWidget):
             self.timer.stop()  # Stop the animation when the total time is reached
 
 class MainWindow(QMainWindow):
-    def __init__(self, components, connections, time_interval, total_time, positions, upvectors):
+    def __init__(self, machine, time_interval, total_time, positions, upvectors):
         super().__init__()
         self.setWindowTitle("3D Machine Animation")
         self.setGeometry(100, 100, 800, 600)
 
-        self.animation_widget = DirectAnimationWidget(components, connections, time_interval, total_time, positions, upvectors)
-        #self.animation_widget = AnimationSceneWidget(components, connections, time_interval, total_time)
+        self.animation_widget = DirectAnimationWidget(machine, time_interval, total_time, positions, upvectors)
+        #self.animation_widget = AnimationSceneWidget(machine, time_interval, total_time)
         self.setCentralWidget(self.animation_widget)
 
-def run_animation(components, connections, time_interval, total_time, camera_position, look_at_point, positions, upvectors):
+def run_animation(machine, time_interval, total_time, camera_position, look_at_point, positions, upvectors):
     app = QApplication(sys.argv)
-    window = MainWindow(components, connections, time_interval, total_time, positions, upvectors)
+    window = MainWindow(machine, time_interval, total_time, positions, upvectors)
     window.animation_widget.visualization.camera_position = camera_position
     window.animation_widget.visualization.look_at_point = look_at_point
     window.animation_widget.positions = positions
@@ -267,14 +272,13 @@ if __name__ == "__main__":
     slider_dof = {'translation': ['x']}
 
     # Add connections with DOF and relative positions
-    machine.assembler.add_connection(machine.components[0], machine.components[1], "hinge", hinge_dof, relative_position1=(0, 0, 1), relative_position2=(0, 1, 0))
-    machine.assembler.add_connection(machine.components[1], machine.components[2], "slider", slider_dof, relative_position1=(2, 0, 0), relative_position2=(0, 0, 2))
+    machine.add_connection(component1, component2, "hinge", hinge_dof, relative_position1=(0, 0, 1), relative_position2=(0, 1, 0))
+    machine.add_connection(component2, component3, "slider", slider_dof, relative_position1=(2, 0, 0), relative_position2=(0, 0, 2))
     component1.apply_force("init1", (-0.1, 0, 0),(0, 0, 1), 4)
     component2.apply_force("init2", (0, 0, 0.1),(1, 0, 0), 2)
-    connections = machine.assembler.connections
+    connections = machine.connections
     components = machine.components
 
-    print(connections[0]["component2"].position)
     # Example camera and look-at settings
     camera_position = (20, 20, 20)
     look_at_point = (0, 0, 0)
@@ -282,4 +286,4 @@ if __name__ == "__main__":
     
     print(positions)
     # Run the animation
-    run_animation(components, connections, time_interval=1, total_time=10, camera_position=camera_position, look_at_point=look_at_point, positions=positions, upvectors=upvectors)
+    run_animation(machine, time_interval=1, total_time=10, camera_position=camera_position, look_at_point=look_at_point, positions=positions, upvectors=upvectors)
