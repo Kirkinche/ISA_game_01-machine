@@ -43,7 +43,7 @@ class Machine3DVisualization(QOpenGLWidget):
         glColor3f(0.9, 0.6, 0.2)  # Set drawing color to yellow-orange
 
         # Draw components as cylinders
-        for component in self.components:
+        for component in machine.components:
             self.draw_cylinder(position = component.position, radius=0.5, height=1, upvector = component.upvector)
 
         # Draw connections as lines from component positions to relative positions
@@ -274,8 +274,8 @@ if __name__ == "__main__":
     # Add connections with DOF and relative positions
     machine.add_connection(component1, component2, "hinge", hinge_dof, relative_position1=(0, 0, 1), relative_position2=(0, 1, 0))
     machine.add_connection(component2, component3, "slider", slider_dof, relative_position1=(2, 0, 0), relative_position2=(0, 0, 2))
-    component1.apply_force("init1", (-0.1, 0, 0),(0, 0, 1), 4)
-    component2.apply_force("init2", (0, 0, 0.1),(1, 0, 0), 2)
+    component1.apply_force("init1", (-1, 0, 0),(0, 0, 1), 4)
+    component2.apply_force("init2", (0, 0, 1),(1, 0, 0), 2)
     connections = machine.connections
     components = machine.components
 

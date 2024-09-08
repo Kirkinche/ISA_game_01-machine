@@ -11,11 +11,15 @@ class MechanicalSystemManager:
     def __init__(self):
         self.machines = {}
         self.material_optimizer = None
-
+        
+    def add_machine(self, machine_name):
+        #add a new machine to the machines dictionary
+        self.machines[machine_name] = Machine(name=machine_name)
+    
     def initialize_machine(self, machine_name):
         if machine_name in machine_components:
             machine = initialize_machine_with_all_components(machine_name, machine_components, market_library)
-
+            print(self.machines)
             # Initialize necessary properties
             for component in machine.components:
                 if component.mass == 0:

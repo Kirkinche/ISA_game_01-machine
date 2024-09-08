@@ -1,21 +1,26 @@
 # main_gui.py
+# this platform is for creating robotic machine, adding components to the machine, 
+# specify them and performing calculation onto the machine such as total mass, power consumption, heat generated, noise generated, etc.
+
+
 
 from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout,QHBoxLayout, QWidget, QPushButton, QLabel, QComboBox, QScrollArea, QListWidget, QListWidgetItem, QDialog, QFormLayout, QLineEdit, QDialogButtonBox, QFileDialog
-from PyQt6.QtCore import QTimer
+from PyQt6.QtCore import QTimer, Qt
 from PyQt6.QtGui import QAction, QIcon
 from main_mechanical import MechanicalSystemManager
 from CAD_visualization import CADVisualizer
-
+from machine_component import MachineComponent
 
 
 class MechanicalSystemGUI(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Mechanical System Manager")
+        self.setWindowTitle("Robotic System Manager")
         self.setGeometry(100, 100, 800, 600)
 
         # Initialize mechanical system manager
         self.manager = MechanicalSystemManager()
+        self.machine_name_input = ""
 
         # Create main widget and layout
         self.main_widget = QWidget(self)
@@ -47,6 +52,10 @@ class MechanicalSystemGUI(QMainWindow):
         # adding the actions
         initialize_machine_action = QAction("Initialize Machine", self)
         initialize_machine_action.triggered.connect(self.initialize_machine)
+        New_machine_action = QAction("New Machine", self)
+        New_machine_action.triggered.connect(self.new_machine)
+        Add_component_action = QAction("Add Component", self)
+        Add_component_action.triggered.connect(self.add_component)        
         View_Components_action = QAction("View Components", self)
         View_Components_action.triggered.connect(self.view_components)
         Run_Simulation_action = QAction("Run Simulation", self)
@@ -69,7 +78,9 @@ class MechanicalSystemGUI(QMainWindow):
         file_menu.addAction(Load_Machine_Data_action)
 
         machine_menu = menu_bar.addMenu("Machine")
+        machine_menu.addAction(New_machine_action)
         machine_menu.addAction(initialize_machine_action)
+        machine_menu.addAction(Add_component_action)
         machine_menu.addAction(View_Components_action)
         machine_menu.addAction(Run_Simulation_action)
 
@@ -93,6 +104,32 @@ class MechanicalSystemGUI(QMainWindow):
             components = [component.name for component in self.manager.machines[machine_name].components]
             self.component_combo.addItems(components)
 
+    def new_machine(self):
+        dialog = MachineNameDialog()
+        
+        if dialog.exec() == QDialog.DialogCode.Accepted:  # This will show the dialog modally
+            machine_name = dialog.machine_name_input.text()  # Accessing the input text directly
+            self.manager.add_machine(machine_name)
+            print(self.manager.machines)  # Debugging line
+        self.refresh_machine_list()
+
+    def add_component(self):
+        dialog = ComponentNameDialog()
+        machine_name = self.machine_combo.currentText()
+        if dialog.exec() == QDialog.DialogCode.Accepted:  # This will show the dialog modally
+            component_name = dialog.component_name_input.text()  # Accessing the input text directly
+            machine = self.manager.machines[machine_name]
+            if machine:
+                component = MachineComponent(component_name)  # Create a new component instance
+                machine.add_component(component)  # Add the component to the machine
+                self.populate_component_selector()  # Refresh the component selector
+                self.output_label.setText(f"Component '{component_name}' added to '{machine_name}'.")
+                self.view_components()
+                print(self.manager.machines)  # Debugging line
+            else:
+                self.output_label.setText(f"Machine '{machine_name}' not found.")  # Display an error message
+            
+            
     def view_components(self):
         machine_name = self.machine_combo.currentText()
         components = self.manager.display_machine_components(machine_name)
@@ -123,7 +160,7 @@ class MechanicalSystemGUI(QMainWindow):
         machine_name = self.machine_combo.currentText()
         components = self.manager.display_machine_components(machine_name)
         if components:
-            component_name = components[0]  # Modify the first component for simplicity
+            component_name = self.component_combo.currentText()
             component = self.manager.machines[machine_name].get_component_by_name(component_name)
             dialog = ComponentEditorDialog(component)
             if dialog.exec():
@@ -165,8 +202,11 @@ class MechanicalSystemGUI(QMainWindow):
     def refresh_machine_list(self):
         # Clear and update the machine combo box with valid machine names
         self.machine_combo.clear()
-        valid_machine_names = machine_components.keys()  # Assuming machine_components is imported
-        self.machine_combo.addItems(valid_machine_names)
+        # Assuming machine_components is imported and combine them with the machine names from the manager 
+        init_machine_names = machine_components.keys() 
+        self.machine_combo.addItems(init_machine_names)
+        new_machine_names = self.manager.machines.keys() 
+        self.machine_combo.addItems(new_machine_names)
         self.populate_component_selector()  # Refresh components when machines are refreshed
     
     def force_on_component(self):
@@ -182,6 +222,47 @@ class MechanicalSystemGUI(QMainWindow):
                 self.output_label.setText(f"Component '{component_name}' not found in '{machine_name}'.")
         else:
             self.output_label.setText("Please select both a machine and a component.")
+
+class MachineNameDialog(QDialog): 
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Machine Name")
+        self.layout = QVBoxLayout(self)
+        #input box to enter machine name:
+        self.machine_name_input = QLineEdit(self)
+        self.layout.addWidget(self.machine_name_input)
+        #ok and cancel buttons
+        self.ok_button = QPushButton("OK", self)
+        self.ok_button.clicked.connect(self.accept)
+        self.cancel_button = QPushButton("Cancel", self)
+        self.cancel_button.clicked.connect(self.reject)
+        self.layout.addWidget(self.ok_button)
+        self.layout.addWidget(self.cancel_button)
+        self.setLayout(self.layout)
+        
+    def get_machine_name(self):
+        return self.machine_name_input.text()
+
+
+class ComponentNameDialog(QDialog): 
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Component Name")
+        self.layout = QVBoxLayout(self)
+        #input box to enter component name:
+        self.component_name_input = QLineEdit(self)
+        self.layout.addWidget(self.component_name_input)
+        #ok and cancel buttons
+        self.ok_button = QPushButton("OK", self)
+        self.ok_button.clicked.connect(self.accept)
+        self.cancel_button = QPushButton("Cancel", self)
+        self.cancel_button.clicked.connect(self.reject)
+        self.layout.addWidget(self.ok_button)
+        self.layout.addWidget(self.cancel_button)
+        self.setLayout(self.layout)
+        
+    def get_component_name(self):
+        return self.component_name_input.text()
 
 class ComponentEditorDialog(QDialog):
     def __init__(self, component):

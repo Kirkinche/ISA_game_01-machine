@@ -30,11 +30,18 @@ class Machine:
     def add_component(self, component = MachineComponent(Any)):
         """Adds a MachineComponent to the machine."""
         if isinstance(component, MachineComponent):
+            i = 1
             # unique name only
             if not component.name in [c.name for c in self.components]:
                 self.components.append(component)
             else:
-                raise TypeError(f"Component with name '{component.name}' already exists in the machine.")
+                proposed_name = component.name + "_" + str(i)
+                while proposed_name in [c.name for c in self.components]:
+                    i += 1
+                    proposed_name = component.name + "_" + str(i)
+                component.name = proposed_name 
+                self.components.append(component)
+                #raise TypeError(f"Component with name '{component.name}' already exists in the machine.")
         else:
             raise TypeError("Only MachineComponent objects can be added.")
 
@@ -178,13 +185,13 @@ class Machine:
             relative_position1 = connection["relative_position1"]
             relative_position2 = connection["relative_position2"]
 
-            #if component1_name == component1.name and component2__name == component2.name:
-            if connection_type == "fixed":
-                self._apply_fixed_connection(component1, component2, relative_position1, relative_position2)
-            elif connection_type == "hinge":
-                self._apply_hinge_connection(component1, component2, degrees_of_freedom, relative_position1, relative_position2)
-            elif connection_type == "slider":
-                self._apply_slider_connection(component1, component2, degrees_of_freedom, relative_position1, relative_position2)
+            if component1_name == component1.name and component2__name == component2.name:
+                if connection_type == "fixed":
+                    self._apply_fixed_connection(component1, component2, relative_position1, relative_position2)
+                elif connection_type == "hinge":
+                    self._apply_hinge_connection(component1, component2, degrees_of_freedom, relative_position1, relative_position2)
+                elif connection_type == "slider":
+                    self._apply_slider_connection(component1, component2, degrees_of_freedom, relative_position1, relative_position2)
             #else:
             #    raise ValueError("The components do not match the connection.")
         if self.connections:
@@ -208,7 +215,6 @@ class Machine:
         Apply fixed connection constraints between two components.
         This restricts all relative motion between the components.
         """
-        self.get_component_by_name(component1)
         corrected_position = tuple(c1 + rp1 + rp2 for c1, rp1, rp2 in zip(component1.position, relative_position1, relative_position2))
         component2.position = corrected_position
         component2.velocity = component1.velocity
@@ -289,9 +295,6 @@ class Machine:
                     r_vector[0] * reaction_force - r_vector[1] * reaction_force   # Torque around z-axis
                 )
                 
-                # Update the torque for both components
-                component1.torque = component1.update_torque()
-                component2.torque = component2.update_torque()
 
         print(f"Hinge connection applied between {component1.name} and {component2.name} with DOF: {degrees_of_freedom} at relative positions {relative_position1} and {relative_position2}.")
 
@@ -332,12 +335,24 @@ class Machine:
         positions, upvectors = [], []
         component_positions = []
         component_upvectors = []
+        i = 0
+        for component in self.components:
+            if component.name == "Ground":  # Skip the ground component
+                continue
+                #component.calculate_dynamics(1)
+            else:
+                print(component.position)
+                            # We need to fix the connection between component and its effects
+            self.calculate_connection_dynamics(1, self.components[i], component)
+            i += 1
+            print (i)
+            print(component.position)
         for _ in range(time_duration):
-            i = 0
             for component in self.components:
                 if component.name == "Ground":  # Skip the ground component
                    component.calculate_dynamics(1)
                 else:
+                    print(component.position)
                     component.calculate_dynamics(1)
                     validation_errors = component.validate_attributes()
                     if validation_errors:
@@ -346,10 +361,10 @@ class Machine:
                     print(component.position)
                     component.start_sensors()
                     component.acceleration = (0, 0, 0)
-                    # We need to fix the connection between component and its effects
-                    self.calculate_connection_dynamics(1, self.components[i], component)
-                    i += 1
-                    print (i)
+                    component.calculate_damping
+                    # Store the current position and upvector
+                    component_positions.append({'name': component.name, 'position': component.position})
+                    component_upvectors.append({'name': component.name, 'upvector': component.upvector})
                     #for connection in self.connections:
                     #    component2 = connection["component2"]
                     #component.position = component2.position          
@@ -359,10 +374,6 @@ class Machine:
                     #component.forces = component2.forces
                     component.update(1)
                     component.acceleration = tuple(f / component.mass for f in component.net_force)
-                    component.calculate_damping
-                    # Store the current position and upvector
-                    component_positions.append({'name': component.name, 'position': component.position})
-                    component_upvectors.append({'name': component.name, 'upvector': component.upvector})
                 
                     component.calculate_stress(sum(component.net_force))
                     component.calculate_strain()
