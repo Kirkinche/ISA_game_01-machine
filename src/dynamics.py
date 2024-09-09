@@ -55,10 +55,20 @@ class Dynamics:
     def calculate_kinetic_energy(component):
         """
         Calculate the kinetic energy of the component.
-        KE = 0.5 * m * v^2
+        KE = 0.5 * m * v^2 but v is a vector, so we sum the squares of its components.
         """
-        kinetic_energy = 0.5 * component.mass * sum(v ** 2 for v in component.velocity)
+        # Unpack the velocity components
+        u, v, y = component.velocity
+        print(component.velocity)
+        
+        # Calculate the magnitude of the velocity vector
+        velocity_magnitude = math.sqrt(u**2 + v**2 + y**2)
+        
+        # Kinetic energy = 0.5 * m * v^2 (where v is the velocity magnitude)
+        kinetic_energy = 0.5 * component.mass * velocity_magnitude ** 2
+        
         return kinetic_energy
+
 
     @staticmethod
     def calculate_potential_energy(component, gravity=9.8, reference_height=0):

@@ -13,14 +13,17 @@ class MachineComponent:
         self.radius = 0.5  # m.
         self.length = 1 # m.
         self.volume = 1 # in m^3
-        self.position = (0, 0, 0)  # 3D coordinates (x, y, z) in meters of the center of mass
-        self.upvector = (0, 1, 0)  # Up vector for the component
-        self.velocity = (0, 0, 0)  # m/s of the center of mass
         self.forces = {}  # dictionary of forces applied on the component
+        self.position = (float(0), float(0), float(0))  # 3D coordinates (x, y, z) in meters of the center of mass
+        self.upvector = (float(0), float(1), float(0))  # Up vector for the component
+        self.velocity = (float(0), float(0), float(0))  # m/s of the center of mass
         self.net_force = (0, 0, 0)  # N of the center of mass
         self.torque = (0, 0, 0)  # Vector N*m of the center of mass
         self.acceleration = (0, 0, 0)  # m/s^2 of the center of mass
         self.momentum = (0, 0, 0)  # kg*m/s of the center of mass
+        self.kinetic_energy = float(0)  # J of the center of mass
+        self.potential_energy = float(0)  # J of the center of mass
+        self.rotational_kinetic_energy = float(0)  # J of the center of mass
         self.temperature = 25.0  # Initial temperature in Celsius
         self.pressure = 101.3  # Initial pressure in kPa
         self.vibration_intensity = 0.0
@@ -344,7 +347,12 @@ class MachineComponent:
     def update_properties(self, properties):
         for key, value in properties.items():
             if hasattr(self, key):
-                setattr(self, key, value)
+                if key == 'velocity':
+                    if len(value) != 3:
+                        raise ValueError(f"Velocity must contain exactly 3 components, got {len(value)}: {value}")
+                    setattr(self, key, tuple(value))  # Ensure it's a 3-tuple
+                else:
+                    setattr(self, key, value)
             else:
                 raise AttributeError(f"{self.__class__.__name__} has no attribute '{key}'")
             

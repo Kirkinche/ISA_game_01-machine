@@ -12,10 +12,6 @@ class Machine:
     def __init__(self, name):
         self.name = name
         self.components = []
-        self.add_component(MachineComponent("Ground")) # all machine must have an initial component named "Ground", which represent the ground wher the machine is placed.        
-        self.components[0].material = "steel"
-        self.components[0].position = (0,0,0)
-        self.components[0].mass = 10^30 # the ground has an infinite mass, so it doesn't move during the simulation
         self.status = "off"
         self.speed = 0
         self.power_consumption = 0
@@ -65,12 +61,9 @@ class Machine:
         # Additional costs (e.g., labor, maintenance) could be added here
         return energy_cost
 
-    def calculate_manufacturing_cost(self, component_costs):
+    def calculate_manufacturing_cost(self):
         """Calculates the total manufacturing cost based on the cost of individual components."""
-        total_cost = 0
-        for component in self.components:
-            total_cost += component_costs.get(component.name, 0)
-        return total_cost
+        return sum(component.cost for component in self.components)
 
     def calculate_wear_and_maintenance(self):
         """Estimates the wear of each component and suggests a maintenance schedule."""
@@ -335,7 +328,7 @@ class Machine:
         positions, upvectors = [], []
         component_positions = []
         component_upvectors = []
-        i = 0
+        #i = 0
         for component in self.components:
             if component.name == "Ground":  # Skip the ground component
                 continue
@@ -343,22 +336,25 @@ class Machine:
             else:
                 print(component.position)
                             # We need to fix the connection between component and its effects
-            self.calculate_connection_dynamics(1, self.components[i], component)
-            i += 1
-            print (i)
-            print(component.position)
+            #self.calculate_connection_dynamics(1, self.components[i], component)
+            #i += 1
+            #print (i)
+            #print(component.position)
         for _ in range(time_duration):
             for component in self.components:
                 if component.name == "Ground":  # Skip the ground component
                    component.calculate_dynamics(1)
                 else:
                     print(component.position)
+                    print(component.velocity)
                     component.calculate_dynamics(1)
+                    print(component.position)
+                    print(component.velocity)
                     validation_errors = component.validate_attributes()
                     if validation_errors:
                         raise ValueError(f"Component {component.name} cannot start simulation due to: " + ", ".join(validation_errors))
                     # Initialize lists to store positions and upvectors
-                    print(component.position)
+                    #print(component.position)
                     component.start_sensors()
                     component.acceleration = (0, 0, 0)
                     component.calculate_damping

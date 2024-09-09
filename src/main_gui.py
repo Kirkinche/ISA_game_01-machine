@@ -10,6 +10,7 @@ from PyQt6.QtGui import QAction, QIcon
 from main_mechanical import MechanicalSystemManager
 from CAD_visualization import CADVisualizer
 from machine_component import MachineComponent
+from machine import Machine
 
 
 class MechanicalSystemGUI(QMainWindow):
@@ -58,6 +59,8 @@ class MechanicalSystemGUI(QMainWindow):
         Add_component_action.triggered.connect(self.add_component)        
         View_Components_action = QAction("View Components", self)
         View_Components_action.triggered.connect(self.view_components)
+        View_machine_profile_action = QAction("View Machine Profile", self)
+        View_machine_profile_action.triggered.connect(self.view_machine_profile)
         Run_Simulation_action = QAction("Run Simulation", self)
         Run_Simulation_action.triggered.connect(self.run_simulation)
         Modify_Component_action = QAction("Modify Component", self)
@@ -82,6 +85,7 @@ class MechanicalSystemGUI(QMainWindow):
         machine_menu.addAction(initialize_machine_action)
         machine_menu.addAction(Add_component_action)
         machine_menu.addAction(View_Components_action)
+        machine_menu.addAction(View_machine_profile_action)
         machine_menu.addAction(Run_Simulation_action)
 
         component_menu = menu_bar.addMenu("Component")
@@ -128,6 +132,15 @@ class MechanicalSystemGUI(QMainWindow):
                 print(self.manager.machines)  # Debugging line
             else:
                 self.output_label.setText(f"Machine '{machine_name}' not found.")  # Display an error message
+
+    def initialize_machine(self):
+        machine_name = self.machine_combo.currentText()
+        if machine_name:
+            self.manager.initialize_machine(machine_name)
+            self.output_label.setText(f"Machine '{machine_name}' initialized.")
+            self.refresh_machine_list()
+        else:
+            self.output_label.setText("No machine selected.")
             
             
     def view_components(self):
@@ -147,14 +160,30 @@ class MechanicalSystemGUI(QMainWindow):
 
         self.output_label.setText(f"Components in '{machine_name}' displayed.")
 
-    def initialize_machine(self):
+    def view_machine_profile(self):
         machine_name = self.machine_combo.currentText()
-        if machine_name:
-            self.manager.initialize_machine(machine_name)
-            self.output_label.setText(f"Machine '{machine_name}' initialized.")
-            self.refresh_machine_list()
+        profile_text = ""
+        if machine_name in self.manager.machines:  # Check if the machine exists
+            machine = self.manager.machines[machine_name]  # Get the machine instance
+            profile_text = f"Machine Name: {machine.name}\n"  # Start the profile text with the machine name
+            machine_total_mass = machine.calculate_total_mass()
+            time_period = 3600 # Example time period in seconds (1 hour)
+            energy_cost_per_kwh = 0.1641 #  energy cost per kWh in USD on 2024-09-08
+            machine_operating_cost = machine.calculate_operating_cost(1,energy_cost_per_kwh)
+            machine_power_consumption = machine.calculate_power_consumption(time_period)
+            machine_manufacturing_cost = machine.calculate_manufacturing_cost()
         else:
-            self.output_label.setText("No machine selected.")
+            raise(TypeError("Machine not found"))
+        profile_text += f"Total Mass: {machine_total_mass} kg\n"  # Add the total mass to the profile text
+        profile_text += f"Operating Cost per hour and 0.1641 USD per kWh: {machine_operating_cost} USD\n"  # Add the operating cost to the profile text
+        profile_text += f"Power Consumption: {machine_power_consumption} W\n"  # Add the power consumption to the profile text
+        profile_text += f"Manufacturing Cost: {machine_manufacturing_cost} USD\n"  # Add the manufacturing cost to the profile text
+        
+        #display the machine data in the Data Display Dialog:
+        dialog = DataDisplayDialog(profile_text)  # Create a new instance of the dialog
+        dialog.exec()  # Show the dialog modally
+        
+
 
     def modify_component(self):
         machine_name = self.machine_combo.currentText()
@@ -223,6 +252,17 @@ class MechanicalSystemGUI(QMainWindow):
         else:
             self.output_label.setText("Please select both a machine and a component.")
 
+class DataDisplayDialog(QDialog):
+    def __init__(self, profile_text):
+        super().__init__()
+        self.setWindowTitle("Data Display")
+        self.profile_text = profile_text
+        self.layout = QVBoxLayout(self)
+        self.layout.addWidget(QLabel(self.profile_text))
+        self.setLayout(self.layout)        
+
+
+
 class MachineNameDialog(QDialog): 
     def __init__(self):
         super().__init__()
@@ -282,12 +322,24 @@ class ComponentEditorDialog(QDialog):
         
         # Create input fields dynamically for each attribute of the component
         self.inputs = {}
+        tuple_attributes = ['position', 'upvector', 'velocity', 'net_force', 'torque', 'acceleration', 'momentum']
+        
         for attr_name in dir(component):
             if not callable(getattr(component, attr_name)) and not attr_name.startswith("__"):
-                label = QLabel(attr_name.replace("_", " ").capitalize() + ":")
-                line_edit = QLineEdit(str(getattr(component, attr_name)), self)
-                self.form_layout.addRow(label, line_edit)
-                self.inputs[attr_name] = line_edit
+                attr_value = getattr(component, attr_name)
+                
+                # Handle tuple attributes (like position, velocity)
+                if attr_name in tuple_attributes:
+                    for i, label in enumerate(['x', 'y', 'z']):
+                        line_edit = QLineEdit(str(attr_value[i]), self)
+                        self.form_layout.addRow(QLabel(f"{attr_name} ({label}):"), line_edit)
+                        self.inputs[f"{attr_name}_{label}"] = line_edit
+                else:
+                    # For scalar attributes, use a single field
+                    label = QLabel(attr_name.replace("_", " ").capitalize() + ":")
+                    line_edit = QLineEdit(str(attr_value), self)
+                    self.form_layout.addRow(label, line_edit)
+                    self.inputs[attr_name] = line_edit
         
         # Buttons
         self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
@@ -300,13 +352,41 @@ class ComponentEditorDialog(QDialog):
         self.layout().addWidget(scroll_area)
 
     def get_new_properties(self):
+        """Get the new properties as a dictionary and convert to the correct data type."""
         new_properties = {}
-        for attr_name, line_edit in self.inputs.items():
-            try:
-                new_value = float(line_edit.text())
-            except ValueError:
-                new_value = line_edit.text()  # If it's not a number, keep it as a string
-            new_properties[attr_name] = new_value
+        tuple_attributes = ['position', 'upvector', 'velocity', 'net_force', 'torque', 'acceleration', 'momentum']
+        
+        # Initialize empty lists for the tuple attributes
+        for attr in tuple_attributes:
+            new_properties[attr] = []
+
+        for attr_name in self.inputs:
+            # Check if the input belongs to a tuple attribute (like position, velocity, etc.)
+            for tuple_attr in tuple_attributes:
+                if tuple_attr in attr_name:
+                    # Extract the value for this component (x, y, or z)
+                    try:
+                        new_properties[tuple_attr].append(float(self.inputs[attr_name].text()))
+                    except ValueError:
+                        raise ValueError(f"Invalid input for {attr_name}. Must be a float.")
+            
+            # Convert the accumulated lists for tuple attributes into tuples
+            for attr in tuple_attributes:
+                if len(new_properties[attr]) == 3:
+                    new_properties[attr] = tuple(new_properties[attr])
+
+        # Handle other scalar attributes
+        for attr_name in self.inputs:
+            if not any(attr in attr_name for attr in tuple_attributes):
+                value = self.inputs[attr_name].text()
+                try:
+                    if '.' in value:
+                        new_properties[attr_name] = float(value)
+                    else:
+                        new_properties[attr_name] = int(value)
+                except ValueError:
+                    new_properties[attr_name] = value  # Keep as string if it can't be converted
+
         return new_properties
 
 class ComponentForceApplicationDialog(QDialog):

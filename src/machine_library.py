@@ -1,5 +1,5 @@
 from machine import Machine
-from component_library import initialize_component_library
+from component_library import initialize_component_library, physical_parameter_component_library, market_library
 from machine_component import MachineComponent
 machine_components = {
     "electric_motor": {
@@ -313,8 +313,14 @@ def initialize_machine_with_all_components(machine_name, machine_components, mar
     # Add all components from the machine_components dictionary
     for component, quantity in machine_components[machine_name].items():
         for _ in range(quantity):
-            machine.add_component(MachineComponent(component))
-    
+            component_obj = MachineComponent(component)
+            component_name = component_obj.name
+            component_obj.cost = market_library["components"].get(component_name, 100)
+            component_obj.mass = physical_parameter_component_library[component_name]["mass"]
+            component_obj.radius = physical_parameter_component_library[component_name]["radius"]
+            component_obj.length = physical_parameter_component_library[component_name]["length"]
+            component_obj.volume = physical_parameter_component_library[component_name]["volume"]
+            machine.add_component(component_obj)    
     return machine
 
 def initialize_full_machine_library(machine_components, market_library):
